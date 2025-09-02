@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BOOKCEN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center text-primary mb-4">Login to BOOKCEN</h2>
+                        
+                        <!-- Login Form -->
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="userType" class="form-label">I am a:</label>
+                                <select class="form-select" id="userType" required>
+                                    <option value="">Choose...</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="child">Child</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" required>
+                                <small class="text-muted">For demo: use "parent" or "child"</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                                <small class="text-muted">For demo: use any password</small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 mb-3">
+                                Login
+                            </button>
+                        </form>
+
+                        <!-- Quick Demo Login Buttons -->
+                        <div class="text-center">
+                            <p class="text-muted mb-2">Quick Demo Access:</p>
+                            <button type="button" class="btn btn-outline-primary me-2" onclick="quickLogin('parent')">
+                                Demo as Parent
+                            </button>
+                            <button type="button" class="btn btn-outline-success" onclick="quickLogin('child')">
+                                Demo as Child
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a href="../index.html">← Back to Home</a>
+                        </div>
+
+                        <!-- Demo Account Info -->
+                        <div class="alert alert-info mt-3">
+                            <small>
+                                <strong>Demo Accounts:</strong><br>
+                                Parent: username "parent", any password<br>
+                                Child: username "child", any password
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            const userType = document.getElementById('userType').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Basic validation
+            if (!userType) {
+                alert('Please select whether you are a parent or child');
+                return;
+            }
+
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            // Simple authentication logic (for demo purposes)
+            // In a real app, you would send this to your backend/Firebase
+            if (authenticateUser(userType, username, password)) {
+                // Store user info in browser storage for the session
+                sessionStorage.setItem('userType', userType);
+                sessionStorage.setItem('username', username);
+                sessionStorage.setItem('isLoggedIn', 'true');
+
+                // Show success message
+                showLoginSuccess(userType);
+
+                // Redirect to appropriate dashboard
+                setTimeout(() => {
+                    if (userType === 'parent') {
+                        window.location.href = 'parent-dashboard.html';
+                    } else {
+                        window.location.href = 'child-dashboard.html';
+                    }
+                }, 1500);
+            } else {
+                showLoginError();
+            }
+        });
+
+        // Simple authentication function (demo only)
+        function authenticateUser(userType, username, password) {
+            // For demo purposes, accept these credentials:
+            if (userType === 'parent' && username === 'parent') {
+                return true;
+            }
+            if (userType === 'child' && username === 'child') {
+                return true;
+            }
+            
+            // Also accept any username that matches the user type
+            if (userType === 'parent' && username.toLowerCase().includes('parent')) {
+                return true;
+            }
+            if (userType === 'child' && username.toLowerCase().includes('child')) {
+                return true;
+            }
+            
+            return false;
+        }
+
+        // Quick login function for demo buttons
+        function quickLogin(type) {
+            // Set the form values
+            document.getElementById('userType').value = type;
+            document.getElementById('username').value = type;
+            document.getElementById('password').value = 'demo123';
+            
+            // Store user info
+            sessionStorage.setItem('userType', type);
+            sessionStorage.setItem('username', type);
+            sessionStorage.setItem('isLoggedIn', 'true');
+            
+            // Show success and redirect
+            showLoginSuccess(type);
+            setTimeout(() => {
+                if (type === 'parent') {
+                    window.location.href = 'parent-dashboard.html';
+                } else {
+                    window.location.href = 'child-dashboard.html';
+                }
+            }, 1000);
+        }
+
+        // Show success message
+        function showLoginSuccess(userType) {
+            const successMessage = document.createElement('div');
+            successMessage.className = 'alert alert-success mt-3';
+            successMessage.innerHTML = `
+                <strong>Login Successful!</strong> 
+                Redirecting to ${userType} dashboard...
+            `;
+            
+            const form = document.getElementById('loginForm');
+            form.appendChild(successMessage);
+        }
+
+        // Show error message
+        function showLoginError() {
+            // Remove any existing error messages
+            const existingError = document.querySelector('.alert-danger');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'alert alert-danger mt-3';
+            errorMessage.innerHTML = `
+                <strong>Login Failed!</strong> 
+                Please check your credentials and try again.
+            `;
+            
+            const form = document.getElementById('loginForm');
+            form.appendChild(errorMessage);
+        }
+
+        // Check if user is already logged in when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                const userType = sessionStorage.getItem('userType');
+                if (confirm(`You're already logged in as ${userType}. Go to dashboard?`)) {
+                    if (userType === 'parent') {
+                        window.location.href = 'parent-dashboard.html';
+                    } else {
+                        window.location.href = 'child-dashboard.html';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

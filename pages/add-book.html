@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Book - BOOKCEN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">📚 BOOKCEN</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="parent-dashboard.html">← Back to Dashboard</a>
+                <a class="nav-link" href="../index.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="text-primary">📖 Add New Book</h2>
+                <p class="text-muted">Assign a new book to your child and create a quiz to test their comprehension.</p>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="step-item active" id="step1">
+                        <div class="step-circle">1</div>
+                        <small>Book Details</small>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" id="step2">
+                        <div class="step-circle">2</div>
+                        <small>Create Quiz</small>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" id="step3">
+                        <div class="step-circle">3</div>
+                        <small>Set Rewards</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <form id="addBookForm">
+            <!-- Step 1: Book Details -->
+            <div class="step-content" id="stepContent1">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📚 Book Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="bookTitle" class="form-label">Book Title *</label>
+                                    <input type="text" class="form-control" id="bookTitle" 
+                                           placeholder="e.g., Harry Potter and the Sorcerer's Stone" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="bookAuthor" class="form-label">Author *</label>
+                                    <input type="text" class="form-control" id="bookAuthor" 
+                                           placeholder="e.g., J.K. Rowling" required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="bookPages" class="form-label">Number of Pages</label>
+                                            <input type="number" class="form-control" id="bookPages" 
+                                                   placeholder="e.g., 309" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="readingLevel" class="form-label">Reading Level</label>
+                                            <select class="form-select" id="readingLevel">
+                                                <option value="">Select level...</option>
+                                                <option value="kindergarten">Kindergarten</option>
+                                                <option value="grade1">Grade 1</option>
+                                                <option value="grade2">Grade 2</option>
+                                                <option value="grade3">Grade 3</option>
+                                                <option value="grade4">Grade 4</option>
+                                                <option value="grade5">Grade 5</option>
+                                                <option value="grade6">Grade 6</option>
+                                                <option value="middle">Middle School</option>
+                                                <option value="high">High School</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="bookGenre" class="form-label">Genre</label>
+                                    <select class="form-select" id="bookGenre">
+                                        <option value="">Select genre...</option>
+                                        <option value="adventure">Adventure</option>
+                                        <option value="fantasy">Fantasy</option>
+                                        <option value="mystery">Mystery</option>
+                                        <option value="science-fiction">Science Fiction</option>
+                                        <option value="biography">Biography</option>
+                                        <option value="historical">Historical Fiction</option>
+                                        <option value="realistic">Realistic Fiction</option>
+                                        <option value="non-fiction">Non-Fiction</option>
+                                        <option value="poetry">Poetry</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="dueDate" class="form-label">Due Date (Optional)</label>
+                                    <input type="date" class="form-control" id="dueDate">
+                                    <small class="text-muted">When should your child finish this book?</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="book-cover-placeholder mb-3">
+                                        <div class="placeholder-content">
+                                            <i class="display-1 text-muted">📖</i>
+                                            <p class="text-muted">Book Cover</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary btn-sm">
+                                        Upload Cover Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Create Quiz -->
+            <div class="step-content d-none" id="stepContent2">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">❓ Create Comprehension Quiz</h5>
+                        <small class="text-muted">Add 3-5 questions to test understanding</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <strong>💡 Tips for good questions:</strong> Ask about main characters, plot events, themes, and lessons learned. Avoid yes/no questions.
+                        </div>
+
+                        <div id="quizQuestions">
+                            <!-- Question 1 -->
+                            <div class="question-block mb-4 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Question 1</h6>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(1)">
+                                        Remove
+                                    </button>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control question-input" 
+                                           placeholder="e.g., Who is the main character in this story?" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option A (Correct Answer)" required>
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option B">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option C">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option D">
+                                    </div>
+                                </div>
+                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
+                            </div>
+
+                            <!-- Question 2 -->
+                            <div class="question-block mb-4 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Question 2</h6>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(2)">
+                                        Remove
+                                    </button>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control question-input" 
+                                           placeholder="e.g., What was the main problem in the story?" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option A (Correct Answer)" required>
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option B">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option C">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option D">
+                                    </div>
+                                </div>
+                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
+                            </div>
+
+                            <!-- Question 3 -->
+                            <div class="question-block mb-4 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Question 3</h6>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(3)">
+                                        Remove
+                                    </button>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control question-input" 
+                                           placeholder="e.g., What lesson did the main character learn?" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option A (Correct Answer)" required>
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option B">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option C">
+                                        <input type="text" class="form-control mb-2" 
+                                               placeholder="Option D">
+                                    </div>
+                                </div>
+                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-primary" id="addQuestionBtn" onclick="addQuestion()">
+                            ➕ Add Another Question
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Set Rewards -->
+            <div class="step-content d-none" id="stepContent3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🎁 Set Rewards & Goals</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="rewardAmount" class="form-label">Reward Amount *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="rewardAmount" 
+                                               placeholder="5.00" min="0" step="0.50" required>
+                                    </div>
+                                    <small class="text-muted">How much will your child earn for completing this book?</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="passingScore" class="form-label">Passing Score</label>
+                                    <select class="form-select" id="passingScore">
+                                        <option value="60">60% (3/5 questions correct)</option>
+                                        <option value="70">70% (4/5 questions correct)</option>
+                                        <option value="80" selected>80% (4/5 questions correct)</option>
+                                        <option value="100">100% (All questions correct)</option>
+                                    </select>
+                                    <small class="text-muted">Minimum score needed to earn the reward</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="maxAttempts" class="form-label">Quiz Attempts Allowed</label>
+                                    <select class="form-select" id="maxAttempts">
+                                        <option value="1">1 attempt</option>
+                                        <option value="2">2 attempts</option>
+                                        <option value="3" selected>3 attempts</option>
+                                        <option value="unlimited">Unlimited attempts</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">📊 Reward Summary</h6>
+                                        <div class="reward-preview">
+                                            <p><strong>Book:</strong> <span id="previewTitle">Enter book title</span></p>
+                                            <p><strong>Author:</strong> <span id="previewAuthor">Enter author</span></p>
+                                            <p><strong>Reward:</strong> $<span id="previewReward">0.00</span></p>
+                                            <p><strong>Passing Score:</strong> <span id="previewScore">80%</span></p>
+                                            <p><strong>Quiz Questions:</strong> <span id="previewQuestions">3</span></p>
+                                        </div>
+                                        <div class="mt-3">
+                                            <small class="text-muted">
+                                                💡 Your child will see this information when the book is assigned.
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="notifyChild">
+                                        <label class="form-check-label" for="notifyChild">
+                                            Send notification to child about new book assignment
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" id="prevBtn" onclick="previousStep()" disabled>
+                            ← Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                            Next →
+                        </button>
+                        <button type="submit" class="btn btn-success d-none" id="submitBtn">
+                            🎉 Assign Book to Child
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        let currentStep = 1;
+        let questionCount = 3;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Add Book page loaded!');
+            updateRewardPreview();
+            
+            // Add event listeners for real-time preview updates
+            document.getElementById('bookTitle').addEventListener('input', updateRewardPreview);
+            document.getElementById('bookAuthor').addEventListener('input', updateRewardPreview);
+            document.getElementById('rewardAmount').addEventListener('input', updateRewardPreview);
+            document.getElementById('passingScore').addEventListener('change', updateRewardPreview);
+        });
+
+        // Step navigation functions
+        function nextStep() {
+            if (validateCurrentStep()) {
+                currentStep++;
+                showStep(currentStep);
+                updateStepIndicators();
+                updateNavigationButtons();
+            }
+        }
+
+        function previousStep() {
+            currentStep--;
+            showStep(currentStep);
+            updateStepIndicators();
+            updateNavigationButtons();
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.add('d-none');
+            });
+            
+            // Show current step
+            document.getElementById(`stepContent${step}`).classList.remove('d-none');
+        }
+
+        function updateStepIndicators() {
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                if (index + 1 <= currentStep) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            prevBtn.disabled = currentStep === 1;
+            
+            if (currentStep === 3) {
+                nextBtn.classList.add('d-none');
+                submitBtn.classList.remove('d-none');
+            } else {
+                nextBtn.classList.remove('d-none');
+                submitBtn.classList.add('d-none');
+            }
+        }
+
+        // Validation function
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const title = document.getElementById('bookTitle').value;
+                const author = document.getElementById('bookAuthor').value;
+                
+                if (!title || !author) {
+                    alert('Please fill in the required fields: Book Title and Author');
+                    return false;
+                }
+            } else if (currentStep === 2) {
+                const questions = document.querySelectorAll('.question-input');
+                let valid = true;
+                
+                questions.forEach(question => {
+                    if (!question.value.trim()) {
+                        valid = false;
+                    }
+                });
+                
+                if (!valid) {
+                    alert('Please fill in all quiz questions');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Quiz question management
+        function addQuestion() {
+            if (questionCount >= 8) {
+                alert('Maximum 8 questions allowed');
+                return;
+            }
+            
+            questionCount++;
+            const questionHtml = createQuestionHtml(questionCount);
+            document.getElementById('quizQuestions').insertAdjacentHTML('beforeend', questionHtml);
+            updateRewardPreview();
+            
+            if (questionCount >= 8) {
+                document.getElementById('addQuestionBtn').style.display = 'none';
+            }
+        }
+
+        function removeQuestion(questionNum) {
+            if (questionCount <= 3) {
+                alert('Minimum 3 questions required');
+                return;
+            }
+            
+            const questionBlock = document.querySelector(`#quizQuestions .question-block:nth-child(${questionNum})`);
+            if (questionBlock) {
+                questionBlock.remove();
+                questionCount--;
+                updateQuestionNumbers();
+                updateRewardPreview();
+                
+                document.getElementById('addQuestionBtn').style.display = 'block';
+            }
+        }
+
+        function createQuestionHtml(num) {
+            return `
+                <div class="question-block mb-4 p-3 border rounded">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">Question ${num}</h6>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(${num})">
+                            Remove
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control question-input" 
+                               placeholder="Enter your question..." required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control mb-2" 
+                                   placeholder="Option A (Correct Answer)" required>
+                            <input type="text" class="form-control mb-2" 
+                                   placeholder="Option B">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control mb-2" 
+                                   placeholder="Option C">
+                            <input type="text" class="form-control mb-2" 
+                                   placeholder="Option D">
+                        </div>
+                    </div>
+                    <small class="text-muted">💡 The first option will be marked as the correct answer</small>
+                </div>
+            `;
+        }
+
+        function updateQuestionNumbers() {
+            const questionBlocks = document.querySelectorAll('.question-block');
+            questionBlocks.forEach((block, index) => {
+                const header = block.querySelector('h6');
+                header.textContent = `Question ${index + 1}`;
+            });
+        }
+
+        // Real-time preview update
+        function updateRewardPreview() {
+            const title = document.getElementById('bookTitle').value || 'Enter book title';
+            const author = document.getElementById('bookAuthor').value || 'Enter author';
+            const reward = document.getElementById('rewardAmount').value || '0.00';
+            const score = document.getElementById('passingScore').value || '80';
+            const questions = document.querySelectorAll('.question-input').length;
+
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewAuthor').textContent = author;
+            document.getElementById('previewReward').textContent = reward;
+            document.getElementById('previewScore').textContent = score + '%';
+            document.getElementById('previewQuestions').textContent = questions;
+        }
+
+        // Form submission
+        document.getElementById('addBookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateCurrentStep()) {
+                // Here you would normally send data to your backend
+                alert('🎉 Book successfully assigned to your child!\n\nThey will receive a notification and can start reading right away.');
+                
+                // Redirect back to dashboard
+                setTimeout(() => {
+                    window.location.href = 'parent-dashboard.html';
+                }, 1500);
+            }
+        });
+    </script>
+
+    <style>
+        /* Custom styles for step indicator */
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-circle {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .step-line {
+            height: 2px;
+            background-color: #e9ecef;
+            flex-grow: 1;
+            margin: 0 20px;
+            margin-top: 20px;
+        }
+
+        .step-item.active ~ .step-item .step-line {
+            background-color: #007bff;
+        }
+
+        .book-cover-placeholder {
+            width: 120px;
+            height: 160px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .placeholder-content {
+            text-align: center;
+        }
+
+        .question-block {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            background-color: #e9ecef;
+        }
+
+        .reward-preview p {
+            margin-bottom: 8px;
+        }
+    </style>
+</body>
+</html>

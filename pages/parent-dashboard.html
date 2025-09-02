@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - BOOKCEN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">📚 BOOKCEN</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="profile.html">Settings</a>
+                <a class="nav-link" href="../index.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="text-primary">Welcome back, Parent! 👋</h2>
+                <p class="text-muted">Here's how your child is doing with their reading goals.</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-2">📚</div>
+                        <h5 class="card-title">Books Assigned</h5>
+                        <h3 class="text-primary mb-0" id="booksAssigned">3</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-success mb-2">✅</div>
+                        <h5 class="card-title">Books Completed</h5>
+                        <h3 class="text-success mb-0" id="booksCompleted">1</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-warning mb-2">💰</div>
+                        <h5 class="card-title">Rewards Earned</h5>
+                        <h3 class="text-warning mb-0" id="rewardsEarned">$15</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-info mb-2">🔥</div>
+                        <h5 class="card-title">Reading Streak</h5>
+                        <h3 class="text-info mb-0" id="readingStreak">5 days</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <a href="add-book.html" class="btn btn-primary btn-lg w-100">
+                                    📖 Add New Book
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="progress.html" class="btn btn-success btn-lg w-100">
+                                    📊 View Progress
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="rewards.html" class="btn btn-warning btn-lg w-100">
+                                    💰 Manage Rewards
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Books Status -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Current Reading List</h5>
+                        <small class="text-muted">Your child's assignments</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- Book 1 -->
+                        <div class="row align-items-center mb-3 p-3 bg-light rounded">
+                            <div class="col-md-6">
+                                <h6 class="mb-1 fw-bold">Harry Potter and the Philosopher's Stone</h6>
+                                <small class="text-muted">by J.K. Rowling • Assigned 3 days ago</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 75%">
+                                        75% Complete
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <span class="badge bg-warning fs-6">$10 Reward</span>
+                                <button class="btn btn-sm btn-outline-primary ms-2">Edit</button>
+                            </div>
+                        </div>
+
+                        <!-- Book 2 -->
+                        <div class="row align-items-center mb-3 p-3 bg-light rounded">
+                            <div class="col-md-6">
+                                <h6 class="mb-1 fw-bold">Wonder</h6>
+                                <small class="text-muted">by R.J. Palacio • Assigned 1 week ago</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 25%">
+                                        25% Complete
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <span class="badge bg-warning fs-6">$8 Reward</span>
+                                <button class="btn btn-sm btn-outline-primary ms-2">Edit</button>
+                            </div>
+                        </div>
+
+                        <!-- Book 3 - Completed -->
+                        <div class="row align-items-center mb-3 p-3 bg-success bg-opacity-10 rounded border border-success border-opacity-25">
+                            <div class="col-md-6">
+                                <h6 class="mb-1 fw-bold">Dog Man: Mothering Heights</h6>
+                                <small class="text-muted">by Dav Pilkey • Completed 2 days ago</small>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="badge bg-success fs-6">✅ Completed</span>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <span class="badge bg-success fs-6">$5 Earned</span>
+                                <button class="btn btn-sm btn-outline-success ms-2">View Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Quiz Completed</div>
+                                    Your child completed the quiz for "Dog Man: Mothering Heights" with a score of 4/5
+                                </div>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Book Started</div>
+                                    Your child started reading "Harry Potter and the Philosopher's Stone"
+                                </div>
+                                <small class="text-muted">3 days ago</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Reward Earned</div>
+                                    $5 reward earned for completing "Dog Man: Mothering Heights"
+                                </div>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Child Quick View (if multiple children later) -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Child Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <span class="text-white fs-4">👦</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-1">Alex (Age 8)</h6>
+                                <p class="mb-0 text-muted">Reading Level: Grade 3 • Favorite Genre: Adventure</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-outline-primary" onclick="switchToChildView()">
+                                    Switch to Child View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Parent Dashboard JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Parent Dashboard loaded!');
+            updateDashboardStats();
+        });
+
+        // Function to update dashboard statistics
+        function updateDashboardStats() {
+            // In a real app, this would fetch from your database
+            // For now, we'll use sample data
+            
+            const stats = {
+                booksAssigned: 3,
+                booksCompleted: 1,
+                rewardsEarned: 15,
+                readingStreak: 5
+            };
+
+            // Update the display
+            document.getElementById('booksAssigned').textContent = stats.booksAssigned;
+            document.getElementById('booksCompleted').textContent = stats.booksCompleted;
+            document.getElementById('rewardsEarned').textContent = `$${stats.rewardsEarned}`;
+            document.getElementById('readingStreak').textContent = `${stats.readingStreak} days`;
+        }
+
+        // Function to switch to child view
+        function switchToChildView() {
+            if(confirm('Switch to your child\'s dashboard?')) {
+                window.location.href = 'child-dashboard.html';
+            }
+        }
+
+        // Function to handle editing books
+        function editBook(bookId) {
+            alert(`Edit book functionality coming soon! Book ID: ${bookId}`);
+            // In the future, this will open an edit modal or redirect to edit page
+        }
+
+        // Add some interactivity to progress bars
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease-in-out';
+                    bar.style.width = width;
+                }, 100);
+            });
+        }
+
+        // Animate progress bars when page loads
+        setTimeout(animateProgressBars, 500);
+    </script>
+</body>
+</html>
