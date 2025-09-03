@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Quiz - My Reading Adventure</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="child-theme quiz-theme">
+    <!-- Fun Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4);">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="child-dashboard.html">🌟 My Reading Adventure</a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-link text-white">Hi, Alex! 👋</span>
+                <a class="nav-link text-white" href="../index.html">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Quiz Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-lg quiz-header">
+                    <div class="card-body text-white text-center py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <div class="book-icon">📗</div>
+                            </div>
+                            <div class="col-md-8">
+                                <h1 class="display-6 mb-2" id="quizTitle">Dog Man: Mothering Heights</h1>
+                                <h3 class="mb-3">🎯 Chapter 4 Quiz Time!</h3>
+                                <p class="mb-0">Answer all questions correctly to earn <strong>$0.75</strong>!</p>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="quiz-progress-circle">
+                                    <div class="progress-value" id="questionProgress">1/5</div>
+                                    <small>Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Progress Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Quiz Progress</span>
+                            <span class="text-primary fw-bold" id="progressText">Question 1 of 5</span>
+                        </div>
+                        <div class="progress quiz-progress">
+                            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" 
+                                 id="quizProgressBar" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Question Card -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card quiz-question-card shadow-lg" id="questionCard">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">🤔 Question <span id="currentQuestionNum">1</span></h4>
+                            <div class="timer-display">
+                                <i class="timer-icon">⏱️</i>
+                                <span id="timeRemaining">No Rush!</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="question-content">
+                            <h5 class="question-text mb-4" id="questionText">
+                                What was Dog Man's biggest challenge in Chapter 4?
+                            </h5>
+                            
+                            <div class="answer-options" id="answerOptions">
+                                <div class="answer-option mb-3" data-answer="A">
+                                    <input type="radio" class="form-check-input" id="optionA" name="answer" value="A">
+                                    <label class="form-check-label answer-label w-100" for="optionA">
+                                        <div class="answer-content">
+                                            <span class="answer-letter">A</span>
+                                            <span class="answer-text">Learning to fly like a superhero</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="answer-option mb-3" data-answer="B">
+                                    <input type="radio" class="form-check-input" id="optionB" name="answer" value="B">
+                                    <label class="form-check-label answer-label w-100" for="optionB">
+                                        <div class="answer-content">
+                                            <span class="answer-letter">B</span>
+                                            <span class="answer-text">Saving his friends from the bad guys</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="answer-option mb-3" data-answer="C">
+                                    <input type="radio" class="form-check-input" id="optionC" name="answer" value="C">
+                                    <label class="form-check-label answer-label w-100" for="optionC">
+                                        <div class="answer-content">
+                                            <span class="answer-letter">C</span>
+                                            <span class="answer-text">Understanding his feelings about family</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="answer-option mb-3" data-answer="D">
+                                    <input type="radio" class="form-check-input" id="optionD" name="answer" value="D">
+                                    <label class="form-check-label answer-label w-100" for="optionD">
+                                        <div class="answer-content">
+                                            <span class="answer-letter">D</span>
+                                            <span class="answer-text">Finding his favorite toy</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="question-actions mt-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-outline-secondary btn-lg w-100" id="skipBtn" onclick="skipQuestion()">
+                                        ⏭️ Skip This Question
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-success btn-lg w-100" id="submitBtn" onclick="submitAnswer()" disabled>
+                                        ✅ Submit Answer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Display -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card text-center score-card">
+                    <div class="card-body">
+                        <div class="score-icon">⭐</div>
+                        <h5>Current Score</h5>
+                        <div class="score-display">
+                            <span id="currentScore">0</span>/<span id="totalQuestions">5</span>
+                        </div>
+                        <small class="text-muted">Correct Answers</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center earning-card">
+                    <div class="card-body">
+                        <div class="earning-icon">💰</div>
+                        <h5>Potential Earning</h5>
+                        <div class="earning-display">
+                            $<span id="potentialEarning">0.75</span>
+                        </div>
+                        <small class="text-muted">Pass with 80% or higher!</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Encouragement Section -->
+        <div class="row mb-4" id="encouragementSection">
+            <div class="col-12">
+                <div class="card border-0 encouragement-card">
+                    <div class="card-body text-center py-3">
+                        <div class="encouragement-messages">
+                            <p class="mb-0 fs-5" id="encouragementText">
+                                🌟 You're doing great! Take your time and think carefully! 🌟
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answer Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-body text-center p-4">
+                    <div class="feedback-icon mb-3" id="feedbackIcon">🎉</div>
+                    <h3 class="mb-3" id="feedbackTitle">Great Job!</h3>
+                    <p class="mb-3" id="feedbackMessage">That's the correct answer!</p>
+                    <div class="feedback-explanation mb-3" id="feedbackExplanation" style="display: none;">
+                        <div class="explanation-card">
+                            <strong>💡 Remember:</strong>
+                            <p class="mt-2" id="explanationText"></p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="nextQuestion()">
+                        <span id="nextButtonText">Next Question 🚀</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Complete Modal -->
+    <div class="modal fade" id="completeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-body text-center p-5">
+                    <div class="completion-celebration">
+                        <div class="celebration-icon">🎉🏆🎊</div>
+                        <h2 class="mb-4" id="completionTitle">Amazing Work!</h2>
+                        
+                        <div class="final-score-display mb-4">
+                            <div class="score-circle">
+                                <div class="score-percentage" id="finalScorePercent">80%</div>
+                                <div class="score-label">Final Score</div>
+                            </div>
+                        </div>
+                        
+                        <div class="results-summary mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="result-stat">
+                                        <div class="stat-number" id="finalCorrect">4</div>
+                                        <div class="stat-label">✅ Correct</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="result-stat">
+                                        <div class="stat-number" id="finalWrong">1</div>
+                                        <div class="stat-label">❌ Missed</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="result-stat">
+                                        <div class="stat-number earning-amount">$0.75</div>
+                                        <div class="stat-label">💰 Earned</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="completionMessage" class="mb-4">
+                            <div class="success-message">
+                                <h4 class="text-success">🎊 Quiz Passed! 🎊</h4>
+                                <p>You earned your chapter reward! Keep up the fantastic reading!</p>
+                            </div>
+                        </div>
+                        
+                        <div class="completion-actions">
+                            <button type="button" class="btn btn-success btn-lg me-3" onclick="goToDashboard()">
+                                📚 Back to My Books
+                            </button>
+                            <button type="button" class="btn btn-primary btn-lg" onclick="startNextChapter()">
+                                🚀 Read Next Chapter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Quiz JavaScript -->
+    <script>
+        // Quiz data and state
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = [];
+        let quizData = {};
+
+        // Sample quiz questions (in real app, this would come from backend)
+        const quizQuestions = {
+            'dogman-4': {
+                title: "Dog Man: Mothering Heights - Chapter 4",
+                bookIcon: "📗",
+                reward: 0.75,
+                questions: [
+                    {
+                        question: "What was Dog Man's biggest challenge in Chapter 4?",
+                        options: [
+                            "Learning to fly like a superhero",
+                            "Saving his friends from the bad guys", 
+                            "Understanding his feelings about family",
+                            "Finding his favorite toy"
+                        ],
+                        correct: 2,
+                        explanation: "In Chapter 4, Dog Man struggled with understanding complex emotions about family relationships."
+                    },
+                    {
+                        question: "Who helped Dog Man figure out his problem?",
+                        options: [
+                            "Chief",
+                            "80-HD",
+                            "Petey the Cat",
+                            "Sarah Hatoff"
+                        ],
+                        correct: 1,
+                        explanation: "80-HD used his wisdom and friendship to help Dog Man work through his feelings."
+                    },
+                    {
+                        question: "What lesson did Dog Man learn in this chapter?",
+                        options: [
+                            "How to be a better superhero",
+                            "That family comes in many forms",
+                            "How to catch bad guys faster",
+                            "That robots are better than dogs"
+                        ],
+                        correct: 1,
+                        explanation: "The main lesson was that family isn't just about blood relations - it's about love and care."
+                    },
+                    {
+                        question: "How did the chapter end?",
+                        options: [
+                            "With a big fight scene",
+                            "Dog Man felt sad and alone",
+                            "Dog Man felt grateful for his friends",
+                            "Everyone went home"
+                        ],
+                        correct: 2,
+                        explanation: "The chapter ended on a positive note with Dog Man appreciating his chosen family of friends."
+                    },
+                    {
+                        question: "What was the funniest part of Chapter 4?",
+                        options: [
+                            "When Dog Man chased his tail",
+                            "When 80-HD told jokes to cheer up Dog Man",
+                            "When Chief got angry",
+                            "When the bad guys escaped"
+                        ],
+                        correct: 1,
+                        explanation: "80-HD's silly jokes and funny dance moves were the comedic highlight of the chapter."
+                    }
+                ]
+            }
+        };
+
+        // Encouragement messages
+        const encouragementMessages = [
+            "🌟 You're doing amazing! Keep thinking! 🌟",
+            "🧠 Use that smart brain of yours! 🧠",
+            "📖 Remember what you read in the chapter! 📖",
+            "💪 You've got this! Stay confident! 💪",
+            "🎯 Take your time and choose carefully! 🎯"
+        ];
+
+        // Initialize quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeQuiz();
+            updateEncouragement();
+            setInterval(updateEncouragement, 10000); // Change encouragement every 10 seconds
+        });
+
+        function initializeQuiz() {
+            // Get quiz info from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('book') || 'dogman';
+            const chapter = urlParams.get('chapter') || '4';
+            const quizKey = `${bookId}-${chapter}`;
+            
+            quizData = quizQuestions[quizKey] || quizQuestions['dogman-4'];
+            
+            // Update header
+            document.getElementById('quizTitle').textContent = quizData.title;
+            document.getElementById('potentialEarning').textContent = quizData.reward.toFixed(2);
+            document.getElementById('totalQuestions').textContent = quizData.questions.length;
+            
+            // Load first question
+            loadQuestion();
+            
+            // Add answer selection listeners
+            document.querySelectorAll('input[name="answer"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    document.getElementById('submitBtn').disabled = false;
+                    
+                    // Add selection animation
+                    document.querySelectorAll('.answer-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.closest('.answer-option').classList.add('selected');
+                });
+            });
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= quizData.questions.length) {
+                completeQuiz();
+                return;
+            }
+
+            const question = quizData.questions[currentQuestion];
+            
+            // Update question display
+            document.getElementById('currentQuestionNum').textContent = currentQuestion + 1;
+            document.getElementById('questionProgress').textContent = `${currentQuestion + 1}/${quizData.questions.length}`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${quizData.questions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            document.getElementById('quizProgressBar').style.width = progress + '%';
+            
+            // Update answer options
+            const optionLabels = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const optionId = `option${optionLabels[index]}`;
+                const answerText = document.querySelector(`label[for="${optionId}"] .answer-text`);
+                if (answerText) {
+                    answerText.textContent = option;
+                }
+            });
+            
+            // Reset form
+            document.querySelectorAll('input[name="answer"]').forEach(input => {
+                input.checked = false;
+            });
+            document.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.getElementById('submitBtn').disabled = true;
+            
+            // Add question entrance animation
+            document.getElementById('questionCard').style.opacity = '0';
+            document.getElementById('questionCard').style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                document.getElementById('questionCard').style.transition = 'all 0.5s ease';
+                document.getElementById('questionCard').style.opacity = '1';
+                document.getElementById('questionCard').style.transform = 'translateY(0)';
+            }, 100);
+        }
+
+        function submitAnswer() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) return;
+
+            const answerIndex = ['A', 'B', 'C', 'D'].indexOf(selectedAnswer.value);
+            const question = quizData.questions[currentQuestion];
+            const isCorrect = answerIndex === question.correct;
+            
+            // Store answer
+            answered[currentQuestion] = {
+                selected: answerIndex,
+                correct: isCorrect
+            };
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+                document.getElementById('currentScore').textContent = score;
+            }
+            
+            // Show visual feedback on answers
+            document.querySelectorAll('.answer-option').forEach((opt, index) => {
+                if (index === question.correct) {
+                    opt.classList.add('correct');
+                } else if (index === answerIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Show feedback modal
+            setTimeout(() => {
+                showFeedback(isCorrect, question.explanation);
+            }, 1000);
+        }
+
+        function showFeedback(isCorrect, explanation) {
+            const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+            
+            if (isCorrect) {
+                document.getElementById('feedbackIcon').textContent = '🎉';
+                document.getElementById('feedbackTitle').textContent = 'Awesome!';
+                document.getElementById('feedbackTitle').className = 'mb-3 text-success';
+                document.getElementById('feedbackMessage').textContent = "That's exactly right! Great job!";
+            } else {
+                document.getElementById('feedbackIcon').textContent = '🤔';
+                document.getElementById('feedbackTitle').textContent = 'Not quite right';
+                document.getElementById('feedbackTitle').className = 'mb-3 text-warning';
+                document.getElementById('feedbackMessage').textContent = "Don't worry! Let's learn from this.";
+                
+                // Show explanation
+                document.getElementById('explanationText').textContent = explanation;
+                document.getElementById('feedbackExplanation').style.display = 'block';
+            }
+            
+            // Update next button
+            if (currentQuestion < quizData.questions.length - 1) {
+                document.getElementById('nextButtonText').textContent = 'Next Question 🚀';
+            } else {
+                document.getElementById('nextButtonText').textContent = 'See Results 🏆';
+            }
+            
+            modal.show();
+        }
+
+        function nextQuestion() {
+            // Hide feedback modal
+            const feedbackModal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+            feedbackModal.hide();
+            
+            // Hide explanation for next question
+            document.getElementById('feedbackExplanation').style.display = 'none';
+            
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function skipQuestion() {
+            if (confirm("🤔 Are you sure you want to skip this question? You won't get points for it.")) {
+                answered[currentQuestion] = {
+                    selected: -1,
+                    correct: false
+                };
+                currentQuestion++;
+                loadQuestion();
+            }
+        }
+
+        function completeQuiz() {
+            const percentage = Math.round((score / quizData.questions.length) * 100);
+            const passed = percentage >= 80;
+            
+            // Update completion modal
+            document.getElementById('finalScorePercent').textContent = percentage + '%';
+            document.getElementById('finalCorrect').textContent = score;
+            document.getElementById('finalWrong').textContent = quizData.questions.length - score;
+            
+            // Update completion message
+            const messageDiv = document.getElementById('completionMessage');
+            if (passed) {
+                messageDiv.innerHTML = `
+                    <div class="success-message">
+                        <h4 class="text-success">🎊 Quiz Passed! 🎊</h4>
+                        <p>You earned $${quizData.reward.toFixed(2)}! Keep up the fantastic reading!</p>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="retry-message">
+                        <h4 class="text-warning">📚 Keep Learning! 📚</h4>
+                        <p>You need 80% to pass. Try reading the chapter again and retake the quiz!</p>
+                        <button class="btn btn-warning" onclick="retakeQuiz()">🔄 Try Again</button>
+                    </div>
+                `;
+            }
+            
+            // Show completion modal
+            const completeModal = new bootstrap.Modal(document.getElementById('completeModal'));
+            completeModal.show();
+            
+            // Celebrate with confetti animation
+            if (passed) {
+                createConfetti();
+            }
+        }
+
+        function goToDashboard() {
+            // Update the dashboard with quiz results before redirecting
+            const passed = score >= Math.ceil(quizData.questions.length * 0.8);
+            if (passed) {
+                // In a real app, this would update the database
+                localStorage.setItem('quizCompleted', JSON.stringify({
+                    book: new URLSearchParams(window.location.search).get('book'),
+                    chapter: new URLSearchParams(window.location.search).get('chapter'),
+                    score: score,
+                    earned: quizData.reward,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+            window.location.href = 'child-dashboard.html';
+        }
+
+        function startNextChapter() {
+            alert("🚀 Great idea! Time to read Chapter 5!");
+            goToDashboard();
+        }
+
+        function retakeQuiz() {
+            if (confirm("🔄 Ready to try again? You've got this!")) {
+                currentQuestion = 0;
+                score = 0;
+                answered = [];
+                document.getElementById('currentScore').textContent = '0';
+                const completeModal = bootstrap.Modal.getInstance(document.getElementById('completeModal'));
+                completeModal.hide();
+                loadQuestion();
+            }
+        }
+
+        function updateEncouragement() {
+            const randomMessage = encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)];
+            const encouragementEl = document.getElementById('encouragementText');
+            
+            encouragementEl.style.opacity = '0';
+            setTimeout(() => {
+                encouragementEl.textContent = randomMessage;
+                encouragementEl.style.opacity = '1';
+            }, 300);
+        }
+
+        function createConfetti() {
+            // Simple confetti animation
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.cssText = `
+                    position: fixed;
+                    top: -10px;
+                    left: ${Math.random() * 100}%;
+                    width: 10px;
+                    height: 10px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    z-index: 9999;
+                    animation: fall 3s ease-in-out forwards;
+                `;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+    </script>
+
+    <style>
+        /* Quiz-specific styles */
+        .quiz-theme {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .book-icon {
+            font-size: 4rem;
+            animation: bounce 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-10px); }
+        }
+
+        .quiz-progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-value {
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .quiz-progress {
+            height: 15px;
+        }
+
+        .quiz-question-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .answer-option {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .answer-option:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+        }
+
+        .answer-option.selected {
+            border-color: #007bff;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+
+        .answer-option.correct {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            animation: correctPulse 0.6s ease-in-out;
+        }
+
+        .answer-option.incorrect {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            animation: incorrectShake 0.6s ease-in-out;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .answer-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .answer-letter {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .score-card, .earning-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .score-icon, .earning-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .score-display, .earning-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .encouragement-card {
+            background: linear-gradient(45deg, #FFD93D, #FF6B6B);
+            color: white;
+            border-radius: 15px;
+            animation: pulse 4s ease-in-out infinite;
+        }

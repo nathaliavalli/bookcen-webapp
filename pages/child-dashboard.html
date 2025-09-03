@@ -370,6 +370,109 @@
             document.getElementById('readingStreak').textContent = childData.readingStreak;
         }
 
+// Handle quiz completion when returning from quiz
+function handleQuizCompletion() {
+    const quizResult = localStorage.getItem('quizCompleted');
+    if (quizResult) {
+        const result = JSON.parse(quizResult);
+        
+        // Show success message
+        showSuccessMessage(`🎉 Amazing work! You earned $${result.earned.toFixed(2)} for Chapter ${result.chapter}!`);
+        
+        // Update the book's chapter status
+        updateBookProgress(result.book, result.chapter, result.score >= Math.ceil(5 * 0.8)); // Need 80% to pass
+        
+        // Update total earnings
+        updateEarnings(result.earned);
+        
+        // Clear the stored result
+        localStorage.removeItem('quizCompleted');
+    }
+}
+
+function updateBookProgress(bookId, chapterNum, passed) {
+    if (passed) {
+        // Update the UI to show chapter as completed and next chapter available
+        const bookCard = document.querySelector(`[data-book="${bookId}"]`);
+        if (bookCard) {
+            // Update chapter status badges
+            const currentChapterBadge = bookCard.querySelector(`[data-chapter="${chapterNum}"]`);
+            if (currentChapterBadge) {
+                currentChapterBadge.className = 'badge bg-success me-1';
+                currentChapterBadge.innerHTML = `✓ Ch.${chapterNum}`;
+                currentChapterBadge.title = `Chapter ${chapterNum} - Quiz Passed`;
+            }
+            
+            // Enable next chapter if it exists
+            const nextChapterNum = parseInt(chapterNum) + 1;
+            const nextChapterBadge = bookCard.querySelector(`[data-chapter="${nextChapterNum}"]`);
+            if (nextChapterBadge) {
+                nextChapterBadge.className = 'badge bg-warning me-1 pulse-badge';
+                nextChapterBadge.innerHTML = `🎯 Ch.${nextChapterNum}`;
+                nextChapterBadge.title = `Chapter ${nextChapterNum} - Quiz Available!`;
+                
+                // Update the quiz button
+                const quizButton = bookCard.querySelector('.quiz-btn');
+                if (quizButton) {
+                    quizButton.innerHTML = `🎯 Chapter ${nextChapterNum} Quiz`;
+                    quizButton.onclick = () => startChapterQuiz(bookId, nextChapterNum);
+                    quizButton.disabled = false;
+                    quizButton.className = 'btn btn-warning btn-lg pulse';
+                }
+            }
+            
+            // Update progress bar
+            updateProgressBar(bookCard, bookId);
+            
+            console.log(`Chapter ${chapterNum} completed for ${bookId}`);
+        }
+    }
+}
+
+function updateEarnings(newEarning) {
+    const currentEarnings = parseFloat(document.getElementById('totalEarned').textContent.replace('$', ''));
+    const newTotal = currentEarnings + newEarning;
+    document.getElementById('totalEarned').textContent = `$${newTotal.toFixed(2)}`;
+    
+    // Update money jar
+    const moneyAmount = document.querySelector('.money-amount');
+    if (moneyAmount) {
+        moneyAmount.textContent = `$${newTotal.toFixed(2)}`;
+    }
+}
+
+function updateProgressBar(bookCard, bookId) {
+    // Count completed chapters
+    const completedChapters = bookCard.querySelectorAll('.badge.bg-success').length;
+    const totalChapters = bookCard.querySelectorAll('[data-chapter]').length;
+    
+    const progressPercent = (completedChapters / totalChapters) * 100;
+    const progressBar = bookCard.querySelector('.progress-bar');
+    if (progressBar) {
+        progressBar.style.width = `${progressPercent}%`;
+    }
+    
+    // Update progress text
+    const progressText = bookCard.querySelector('.chapter-progress .small span:last-child');
+    if (progressText) {
+        progressText.textContent = `${completedChapters}/${totalChapters} chapters completed`;
+    }
+    
+    // Update earned amount
+    const earnedSmall = bookCard.querySelector('.total-possible + small');
+    if (earnedSmall && bookId === 'dogman') {
+        earnedSmall.textContent = `Earned: $${(completedChapters * 0.75).toFixed(2)}`;
+    }
+}
+
+// Update your existing DOMContentLoaded event listener:
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Child Dashboard loaded!');
+    loadChildData();
+    handleQuizCompletion(); // Add this line
+    startAnimations();
+});
+
         // Start reading a book
         function startReading(bookId) {
             showSuccessMessage(`🚀 Great choice! Happy reading!`);

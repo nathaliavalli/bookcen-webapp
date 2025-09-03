@@ -6,6 +6,106 @@
     <title>Add New Book - BOOKCEN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Custom styles for step indicator */
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-circle {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .step-line {
+            height: 2px;
+            background-color: #e9ecef;
+            flex-grow: 1;
+            margin: 0 20px;
+            margin-top: 20px;
+        }
+
+        .step-item.active ~ .step-item .step-line {
+            background-color: #007bff;
+        }
+
+        .book-cover-placeholder {
+            width: 120px;
+            height: 160px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .placeholder-content {
+            text-align: center;
+        }
+
+        .chapter-item {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .chapter-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .chapter-active {
+            border-left-color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .question-block {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            background-color: #e9ecef;
+        }
+
+        .reward-preview p {
+            margin-bottom: 8px;
+        }
+
+        .chapter-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .quiz-tab {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .quiz-tab.active {
+            border-color: #007bff;
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -24,7 +124,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h2 class="text-primary">📖 Add New Book</h2>
-                <p class="text-muted">Assign a new book to your child and create a quiz to test their comprehension.</p>
+                <p class="text-muted">Assign a new book to your child and create chapter-specific quizzes.</p>
             </div>
         </div>
 
@@ -39,12 +139,17 @@
                     <div class="step-line"></div>
                     <div class="step-item" id="step2">
                         <div class="step-circle">2</div>
-                        <small>Create Quiz</small>
+                        <small>Chapter Structure</small>
                     </div>
                     <div class="step-line"></div>
                     <div class="step-item" id="step3">
                         <div class="step-circle">3</div>
-                        <small>Set Rewards</small>
+                        <small>Chapter Quizzes</small>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" id="step4">
+                        <div class="step-circle">4</div>
+                        <small>Rewards</small>
                     </div>
                 </div>
             </div>
@@ -140,179 +245,167 @@
                 </div>
             </div>
 
-            <!-- Step 2: Create Quiz -->
+            <!-- Step 2: Chapter Structure -->
             <div class="step-content d-none" id="stepContent2">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">❓ Create Comprehension Quiz</h5>
-                        <small class="text-muted">Add 3-5 questions to test understanding</small>
+                    <div class="card-header">
+                        <h5 class="mb-0">📑 Chapter Structure</h5>
                     </div>
                     <div class="card-body">
                         <div class="alert alert-info">
-                            <strong>💡 Tips for good questions:</strong> Ask about main characters, plot events, themes, and lessons learned. Avoid yes/no questions.
+                            <strong>💡 Tip:</strong> Add all the chapters in this book. Each chapter will have its own quiz that your child needs to complete.
                         </div>
 
-                        <div id="quizQuestions">
-                            <!-- Question 1 -->
-                            <div class="question-block mb-4 p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Question 1</h6>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(1)">
-                                        Remove
-                                    </button>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-8">
                                 <div class="mb-3">
-                                    <input type="text" class="form-control question-input" 
-                                           placeholder="e.g., Who is the main character in this story?" required>
+                                    <label for="chapterTitle" class="form-label">Chapter Title</label>
+                                    <input type="text" class="form-control" id="chapterTitle" 
+                                           placeholder="e.g., The Boy Who Lived">
                                 </div>
+                                
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option A (Correct Answer)" required>
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option B">
+                                        <div class="mb-3">
+                                            <label for="chapterNumber" class="form-label">Chapter Number</label>
+                                            <input type="number" class="form-control" id="chapterNumber" 
+                                                   placeholder="1" min="1" value="1">
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option C">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option D">
+                                        <div class="mb-3">
+                                            <label for="chapterReward" class="form-label">Chapter Reward ($)</label>
+                                            <input type="number" class="form-control" id="chapterReward" 
+                                                   placeholder="1.00" min="0" step="0.25" value="1.00">
+                                        </div>
                                     </div>
                                 </div>
-                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
-                            </div>
 
-                            <!-- Question 2 -->
-                            <div class="question-block mb-4 p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Question 2</h6>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(2)">
-                                        Remove
-                                    </button>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control question-input" 
-                                           placeholder="e.g., What was the main problem in the story?" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option A (Correct Answer)" required>
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option B">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option C">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option D">
-                                    </div>
-                                </div>
-                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
+                                <button type="button" class="btn btn-primary" onclick="addChapter()">
+                                    ➕ Add Chapter
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ms-2" onclick="generateChapters()">
+                                    🔄 Auto-Generate Chapters
+                                </button>
                             </div>
-
-                            <!-- Question 3 -->
-                            <div class="question-block mb-4 p-3 border rounded">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Question 3</h6>
-                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(3)">
-                                        Remove
-                                    </button>
+                            
+                            <div class="col-md-4">
+                                <h6>📋 Chapter List</h6>
+                                <div class="chapter-list" id="chapterList">
+                                    <p class="text-muted text-center">No chapters added yet</p>
                                 </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control question-input" 
-                                           placeholder="e.g., What lesson did the main character learn?" required>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        Total Chapters: <span id="totalChapters">0</span><br>
+                                        Total Rewards: $<span id="totalRewards">0.00</span>
+                                    </small>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option A (Correct Answer)" required>
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option B">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option C">
-                                        <input type="text" class="form-control mb-2" 
-                                               placeholder="Option D">
-                                    </div>
-                                </div>
-                                <small class="text-muted">💡 The first option will be marked as the correct answer</small>
                             </div>
                         </div>
-
-                        <button type="button" class="btn btn-outline-primary" id="addQuestionBtn" onclick="addQuestion()">
-                            ➕ Add Another Question
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 3: Set Rewards -->
+            <!-- Step 3: Chapter Quizzes -->
             <div class="step-content d-none" id="stepContent3">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">🎁 Set Rewards & Goals</h5>
+                        <h5 class="mb-0">❓ Create Chapter Quizzes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Note:</strong> You need to add chapters first. Each chapter will need 3-5 quiz questions.
+                        </div>
+
+                        <div id="chapterQuizTabs">
+                            <p class="text-muted text-center">Add chapters in the previous step to create quizzes</p>
+                        </div>
+
+                        <div id="currentQuizContent" class="mt-4" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 id="currentChapterTitle">Chapter Quiz</h6>
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="addQuizQuestion()">
+                                        ➕ Add Question
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="quizQuestions">
+                                <!-- Questions will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Final Settings & Rewards -->
+            <div class="step-content d-none" id="stepContent4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">🎁 Final Settings & Summary</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="rewardAmount" class="form-label">Reward Amount *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control" id="rewardAmount" 
-                                               placeholder="5.00" min="0" step="0.50" required>
-                                    </div>
-                                    <small class="text-muted">How much will your child earn for completing this book?</small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="passingScore" class="form-label">Passing Score</label>
+                                    <label for="passingScore" class="form-label">Passing Score for All Quizzes</label>
                                     <select class="form-select" id="passingScore">
                                         <option value="60">60% (3/5 questions correct)</option>
                                         <option value="70">70% (4/5 questions correct)</option>
                                         <option value="80" selected>80% (4/5 questions correct)</option>
                                         <option value="100">100% (All questions correct)</option>
                                     </select>
-                                    <small class="text-muted">Minimum score needed to earn the reward</small>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="maxAttempts" class="form-label">Quiz Attempts Allowed</label>
                                     <select class="form-select" id="maxAttempts">
-                                        <option value="1">1 attempt</option>
-                                        <option value="2">2 attempts</option>
-                                        <option value="3" selected>3 attempts</option>
+                                        <option value="1">1 attempt per chapter</option>
+                                        <option value="2">2 attempts per chapter</option>
+                                        <option value="3" selected>3 attempts per chapter</option>
                                         <option value="unlimited">Unlimited attempts</option>
                                     </select>
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="completionBonus" class="form-label">Book Completion Bonus</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="completionBonus" 
+                                               placeholder="5.00" min="0" step="0.50" value="5.00">
+                                    </div>
+                                    <small class="text-muted">Extra reward for completing all chapters</small>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="notifyChild" checked>
+                                    <label class="form-check-label" for="notifyChild">
+                                        Send notification to child about new book assignment
+                                    </label>
+                                </div>
                             </div>
+                            
                             <div class="col-md-6">
                                 <div class="card bg-light">
                                     <div class="card-body">
-                                        <h6 class="card-title">📊 Reward Summary</h6>
+                                        <h6 class="card-title">📊 Book Summary</h6>
                                         <div class="reward-preview">
-                                            <p><strong>Book:</strong> <span id="previewTitle">Enter book title</span></p>
-                                            <p><strong>Author:</strong> <span id="previewAuthor">Enter author</span></p>
-                                            <p><strong>Reward:</strong> $<span id="previewReward">0.00</span></p>
-                                            <p><strong>Passing Score:</strong> <span id="previewScore">80%</span></p>
-                                            <p><strong>Quiz Questions:</strong> <span id="previewQuestions">3</span></p>
-                                        </div>
-                                        <div class="mt-3">
-                                            <small class="text-muted">
-                                                💡 Your child will see this information when the book is assigned.
-                                            </small>
+                                            <p><strong>Book:</strong> <span id="summaryTitle">Enter book title</span></p>
+                                            <p><strong>Author:</strong> <span id="summaryAuthor">Enter author</span></p>
+                                            <p><strong>Total Chapters:</strong> <span id="summaryChapters">0</span></p>
+                                            <p><strong>Chapter Rewards:</strong> $<span id="summaryChapterRewards">0.00</span></p>
+                                            <p><strong>Completion Bonus:</strong> $<span id="summaryBonus">5.00</span></p>
+                                            <p><strong>Total Possible:</strong> $<span id="summaryTotal">5.00</span></p>
+                                            <p><strong>Passing Score:</strong> <span id="summaryScore">80%</span></p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="notifyChild">
-                                        <label class="form-check-label" for="notifyChild">
-                                            Send notification to child about new book assignment
-                                        </label>
+                                    <h6>📝 Quiz Summary</h6>
+                                    <div id="quizSummary" class="small text-muted">
+                                        No quizzes created yet
                                     </div>
                                 </div>
                             </div>
@@ -346,17 +439,19 @@
     <!-- Custom JavaScript -->
     <script>
         let currentStep = 1;
-        let questionCount = 3;
+        let chapters = [];
+        let chapterQuizzes = {};
+        let currentQuizChapter = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Add Book page loaded!');
-            updateRewardPreview();
+            console.log('Add Book page loaded with chapter support!');
+            updateSummary();
             
-            // Add event listeners for real-time preview updates
-            document.getElementById('bookTitle').addEventListener('input', updateRewardPreview);
-            document.getElementById('bookAuthor').addEventListener('input', updateRewardPreview);
-            document.getElementById('rewardAmount').addEventListener('input', updateRewardPreview);
-            document.getElementById('passingScore').addEventListener('change', updateRewardPreview);
+            // Add event listeners for real-time updates
+            document.getElementById('bookTitle').addEventListener('input', updateSummary);
+            document.getElementById('bookAuthor').addEventListener('input', updateSummary);
+            document.getElementById('completionBonus').addEventListener('input', updateSummary);
+            document.getElementById('passingScore').addEventListener('change', updateSummary);
         });
 
         // Step navigation functions
@@ -366,6 +461,10 @@
                 showStep(currentStep);
                 updateStepIndicators();
                 updateNavigationButtons();
+                
+                if (currentStep === 3) {
+                    generateChapterQuizTabs();
+                }
             }
         }
 
@@ -377,12 +476,10 @@
         }
 
         function showStep(step) {
-            // Hide all steps
             document.querySelectorAll('.step-content').forEach(content => {
                 content.classList.add('d-none');
             });
             
-            // Show current step
             document.getElementById(`stepContent${step}`).classList.remove('d-none');
         }
 
@@ -403,7 +500,7 @@
 
             prevBtn.disabled = currentStep === 1;
             
-            if (currentStep === 3) {
+            if (currentStep === 4) {
                 nextBtn.classList.add('d-none');
                 submitBtn.classList.remove('d-none');
             } else {
@@ -423,82 +520,273 @@
                     return false;
                 }
             } else if (currentStep === 2) {
-                const questions = document.querySelectorAll('.question-input');
-                let valid = true;
-                
-                questions.forEach(question => {
-                    if (!question.value.trim()) {
-                        valid = false;
-                    }
-                });
-                
-                if (!valid) {
-                    alert('Please fill in all quiz questions');
+                if (chapters.length === 0) {
+                    alert('Please add at least one chapter');
                     return false;
+                }
+            } else if (currentStep === 3) {
+                for (let chapter of chapters) {
+                    if (!chapterQuizzes[chapter.id] || chapterQuizzes[chapter.id].length < 3) {
+                        alert(`Please add at least 3 questions for ${chapter.title}`);
+                        return false;
+                    }
                 }
             }
             return true;
         }
 
-        // Quiz question management
-        function addQuestion() {
-            if (questionCount >= 8) {
-                alert('Maximum 8 questions allowed');
+        // Chapter management
+        function addChapter() {
+            const title = document.getElementById('chapterTitle').value;
+            const number = parseInt(document.getElementById('chapterNumber').value);
+            const reward = parseFloat(document.getElementById('chapterReward').value);
+            
+            if (!title) {
+                alert('Please enter a chapter title');
                 return;
             }
             
-            questionCount++;
-            const questionHtml = createQuestionHtml(questionCount);
-            document.getElementById('quizQuestions').insertAdjacentHTML('beforeend', questionHtml);
-            updateRewardPreview();
+            const chapterId = `chapter_${number}`;
+            const chapter = {
+                id: chapterId,
+                number: number,
+                title: title,
+                reward: reward
+            };
             
-            if (questionCount >= 8) {
-                document.getElementById('addQuestionBtn').style.display = 'none';
-            }
+            chapters.push(chapter);
+            chapterQuizzes[chapterId] = [];
+            
+            updateChapterList();
+            updateChapterCounters();
+            updateSummary();
+            
+            // Auto-increment for next chapter
+            document.getElementById('chapterNumber').value = number + 1;
+            document.getElementById('chapterTitle').value = '';
         }
 
-        function removeQuestion(questionNum) {
-            if (questionCount <= 3) {
-                alert('Minimum 3 questions required');
+        function generateChapters() {
+            const bookTitle = document.getElementById('bookTitle').value;
+            if (!bookTitle) {
+                alert('Please enter a book title first');
                 return;
             }
             
-            const questionBlock = document.querySelector(`#quizQuestions .question-block:nth-child(${questionNum})`);
-            if (questionBlock) {
-                questionBlock.remove();
-                questionCount--;
-                updateQuestionNumbers();
-                updateRewardPreview();
-                
-                document.getElementById('addQuestionBtn').style.display = 'block';
+            // Sample auto-generation based on common book structures
+            const chapterCount = prompt('How many chapters does this book have?', '10');
+            if (!chapterCount || isNaN(chapterCount)) return;
+            
+            chapters = [];
+            chapterQuizzes = {};
+            
+            for (let i = 1; i <= parseInt(chapterCount); i++) {
+                const chapterId = `chapter_${i}`;
+                const chapter = {
+                    id: chapterId,
+                    number: i,
+                    title: `Chapter ${i}`,
+                    reward: 1.00
+                };
+                chapters.push(chapter);
+                chapterQuizzes[chapterId] = [];
+            }
+            
+            updateChapterList();
+            updateChapterCounters();
+            updateSummary();
+        }
+
+        function removeChapter(chapterId) {
+            chapters = chapters.filter(ch => ch.id !== chapterId);
+            delete chapterQuizzes[chapterId];
+            
+            updateChapterList();
+            updateChapterCounters();
+            updateSummary();
+        }
+
+        function updateChapterList() {
+            const listElement = document.getElementById('chapterList');
+            
+            if (chapters.length === 0) {
+                listElement.innerHTML = '<p class="text-muted text-center">No chapters added yet</p>';
+                return;
+            }
+            
+            let html = '';
+            chapters.forEach(chapter => {
+                html += `
+                    <div class="chapter-item p-2 mb-2 rounded d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Ch. ${chapter.number}:</strong> ${chapter.title}<br>
+                            <small class="text-success">$${chapter.reward.toFixed(2)}</small>
+                        </div>
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeChapter('${chapter.id}')">
+                            ✕
+                        </button>
+                    </div>
+                `;
+            });
+            
+            listElement.innerHTML = html;
+        }
+
+        function updateChapterCounters() {
+            const totalChapters = chapters.length;
+            const totalRewards = chapters.reduce((sum, ch) => sum + ch.reward, 0);
+            
+            document.getElementById('totalChapters').textContent = totalChapters;
+            document.getElementById('totalRewards').textContent = totalRewards.toFixed(2);
+        }
+
+        // Quiz management
+        function generateChapterQuizTabs() {
+            const tabsElement = document.getElementById('chapterQuizTabs');
+            
+            if (chapters.length === 0) {
+                tabsElement.innerHTML = '<p class="text-muted text-center">Add chapters first to create quizzes</p>';
+                return;
+            }
+            
+            let html = '<div class="row">';
+            chapters.forEach((chapter, index) => {
+                const questionsCount = chapterQuizzes[chapter.id].length;
+                html += `
+                    <div class="col-md-6 mb-2">
+                        <div class="quiz-tab p-3 ${index === 0 ? 'active' : ''}" onclick="selectChapterQuiz('${chapter.id}')">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Ch. ${chapter.number}:</strong> ${chapter.title}
+                                </div>
+                                <div>
+                                    <span class="badge ${questionsCount >= 3 ? 'bg-success' : 'bg-warning'}">${questionsCount} Q's</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            tabsElement.innerHTML = html;
+            
+            // Auto-select first chapter
+            if (chapters.length > 0) {
+                selectChapterQuiz(chapters[0].id);
             }
         }
 
-        function createQuestionHtml(num) {
+        function selectChapterQuiz(chapterId) {
+            currentQuizChapter = chapterId;
+            const chapter = chapters.find(ch => ch.id === chapterId);
+            
+            // Update tab selection
+            document.querySelectorAll('.quiz-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.quiz-tab').classList.add('active');
+            
+            // Update quiz content
+            document.getElementById('currentChapterTitle').textContent = `${chapter.title} - Quiz Questions`;
+            document.getElementById('currentQuizContent').style.display = 'block';
+            
+            renderQuizQuestions(chapterId);
+        }
+
+        function renderQuizQuestions(chapterId) {
+            const questionsElement = document.getElementById('quizQuestions');
+            const questions = chapterQuizzes[chapterId] || [];
+            
+            if (questions.length === 0) {
+                questionsElement.innerHTML = `
+                    <div class="alert alert-info text-center">
+                        <p class="mb-2">No questions added yet for this chapter.</p>
+                        <button class="btn btn-primary" onclick="addQuizQuestion()">Add First Question</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            questions.forEach((question, index) => {
+                html += createQuestionHtml(index + 1, question);
+            });
+            
+            questionsElement.innerHTML = html;
+        }
+
+        function addQuizQuestion() {
+            if (!currentQuizChapter) {
+                alert('Please select a chapter first');
+                return;
+            }
+            
+            if (!chapterQuizzes[currentQuizChapter]) {
+                chapterQuizzes[currentQuizChapter] = [];
+            }
+            
+            const newQuestion = {
+                question: '',
+                options: ['', '', '', ''],
+                correctAnswer: 0
+            };
+            
+            chapterQuizzes[currentQuizChapter].push(newQuestion);
+            renderQuizQuestions(currentQuizChapter);
+            updateQuizSummary();
+            generateChapterQuizTabs(); // Refresh tabs to show updated count
+        }
+
+        function removeQuizQuestion(questionIndex) {
+            if (!currentQuizChapter) return;
+            
+            if (chapterQuizzes[currentQuizChapter].length <= 3) {
+                alert('Minimum 3 questions required per chapter');
+                return;
+            }
+            
+            chapterQuizzes[currentQuizChapter].splice(questionIndex, 1);
+            renderQuizQuestions(currentQuizChapter);
+            updateQuizSummary();
+            generateChapterQuizTabs(); // Refresh tabs to show updated count
+        }
+
+        function createQuestionHtml(questionNum, questionData) {
             return `
                 <div class="question-block mb-4 p-3 border rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="mb-0">Question ${num}</h6>
-                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuestion(${num})">
+                        <h6 class="mb-0">Question ${questionNum}</h6>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeQuizQuestion(${questionNum - 1})">
                             Remove
                         </button>
                     </div>
                     <div class="mb-3">
                         <input type="text" class="form-control question-input" 
-                               placeholder="Enter your question..." required>
+                               placeholder="Enter your question..." 
+                               value="${questionData.question}"
+                               onchange="updateQuestionData(${questionNum - 1}, 'question', this.value)" required>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <input type="text" class="form-control mb-2" 
-                                   placeholder="Option A (Correct Answer)" required>
+                                   placeholder="Option A (Correct Answer)" 
+                                   value="${questionData.options[0]}"
+                                   onchange="updateQuestionData(${questionNum - 1}, 'option', this.value, 0)" required>
                             <input type="text" class="form-control mb-2" 
-                                   placeholder="Option B">
+                                   placeholder="Option B" 
+                                   value="${questionData.options[1]}"
+                                   onchange="updateQuestionData(${questionNum - 1}, 'option', this.value, 1)">
                         </div>
                         <div class="col-md-6">
                             <input type="text" class="form-control mb-2" 
-                                   placeholder="Option C">
+                                   placeholder="Option C" 
+                                   value="${questionData.options[2]}"
+                                   onchange="updateQuestionData(${questionNum - 1}, 'option', this.value, 2)">
                             <input type="text" class="form-control mb-2" 
-                                   placeholder="Option D">
+                                   placeholder="Option D" 
+                                   value="${questionData.options[3]}"
+                                   onchange="updateQuestionData(${questionNum - 1}, 'option', this.value, 3)">
                         </div>
                     </div>
                     <small class="text-muted">💡 The first option will be marked as the correct answer</small>
@@ -506,27 +794,61 @@
             `;
         }
 
-        function updateQuestionNumbers() {
-            const questionBlocks = document.querySelectorAll('.question-block');
-            questionBlocks.forEach((block, index) => {
-                const header = block.querySelector('h6');
-                header.textContent = `Question ${index + 1}`;
-            });
+        function updateQuestionData(questionIndex, type, value, optionIndex = null) {
+            if (!currentQuizChapter) return;
+            
+            const questions = chapterQuizzes[currentQuizChapter];
+            if (!questions[questionIndex]) return;
+            
+            if (type === 'question') {
+                questions[questionIndex].question = value;
+            } else if (type === 'option' && optionIndex !== null) {
+                questions[questionIndex].options[optionIndex] = value;
+            }
         }
 
-        // Real-time preview update
-        function updateRewardPreview() {
+        // Summary functions
+        function updateSummary() {
             const title = document.getElementById('bookTitle').value || 'Enter book title';
             const author = document.getElementById('bookAuthor').value || 'Enter author';
-            const reward = document.getElementById('rewardAmount').value || '0.00';
+            const bonus = parseFloat(document.getElementById('completionBonus').value) || 5.00;
             const score = document.getElementById('passingScore').value || '80';
-            const questions = document.querySelectorAll('.question-input').length;
+            
+            const chapterRewards = chapters.reduce((sum, ch) => sum + ch.reward, 0);
+            const totalRewards = chapterRewards + bonus;
 
-            document.getElementById('previewTitle').textContent = title;
-            document.getElementById('previewAuthor').textContent = author;
-            document.getElementById('previewReward').textContent = reward;
-            document.getElementById('previewScore').textContent = score + '%';
-            document.getElementById('previewQuestions').textContent = questions;
+            document.getElementById('summaryTitle').textContent = title;
+            document.getElementById('summaryAuthor').textContent = author;
+            document.getElementById('summaryChapters').textContent = chapters.length;
+            document.getElementById('summaryChapterRewards').textContent = chapterRewards.toFixed(2);
+            document.getElementById('summaryBonus').textContent = bonus.toFixed(2);
+            document.getElementById('summaryTotal').textContent = totalRewards.toFixed(2);
+            document.getElementById('summaryScore').textContent = score + '%';
+            
+            updateQuizSummary();
+        }
+
+        function updateQuizSummary() {
+            const summaryElement = document.getElementById('quizSummary');
+            
+            if (chapters.length === 0) {
+                summaryElement.innerHTML = 'No chapters added yet';
+                return;
+            }
+            
+            let summary = '';
+            let totalQuestions = 0;
+            
+            chapters.forEach(chapter => {
+                const questionsCount = chapterQuizzes[chapter.id] ? chapterQuizzes[chapter.id].length : 0;
+                totalQuestions += questionsCount;
+                
+                const status = questionsCount >= 3 ? '✅' : '⏳';
+                summary += `${status} ${chapter.title}: ${questionsCount} questions<br>`;
+            });
+            
+            summary += `<strong>Total Questions: ${totalQuestions}</strong>`;
+            summaryElement.innerHTML = summary;
         }
 
         // Form submission
@@ -534,84 +856,39 @@
             e.preventDefault();
             
             if (validateCurrentStep()) {
-                // Here you would normally send data to your backend
-                alert('🎉 Book successfully assigned to your child!\n\nThey will receive a notification and can start reading right away.');
+                // Collect all form data
+                const bookData = {
+                    title: document.getElementById('bookTitle').value,
+                    author: document.getElementById('bookAuthor').value,
+                    pages: document.getElementById('bookPages').value,
+                    level: document.getElementById('readingLevel').value,
+                    genre: document.getElementById('bookGenre').value,
+                    dueDate: document.getElementById('dueDate').value,
+                    chapters: chapters,
+                    quizzes: chapterQuizzes,
+                    settings: {
+                        passingScore: document.getElementById('passingScore').value,
+                        maxAttempts: document.getElementById('maxAttempts').value,
+                        completionBonus: document.getElementById('completionBonus').value,
+                        notifyChild: document.getElementById('notifyChild').checked
+                    }
+                };
+                
+                // Here you would send this data to your backend
+                console.log('Book data to save:', bookData);
+                
+                alert(`🎉 Book "${bookData.title}" successfully assigned!\n\n` +
+                      `✅ ${chapters.length} chapters created\n` +
+                      `✅ ${Object.values(chapterQuizzes).reduce((sum, q) => sum + q.length, 0)} quiz questions added\n` +
+                      `💰 Total possible rewards: ${(chapters.reduce((sum, ch) => sum + ch.reward, 0) + parseFloat(bookData.settings.completionBonus)).toFixed(2)}\n\n` +
+                      `Your child will receive a notification and can start reading!`);
                 
                 // Redirect back to dashboard
                 setTimeout(() => {
                     window.location.href = 'parent-dashboard.html';
-                }, 1500);
+                }, 2000);
             }
         });
     </script>
-
-    <style>
-        /* Custom styles for step indicator */
-        .step-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
-        .step-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .step-item.active .step-circle {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .step-line {
-            height: 2px;
-            background-color: #e9ecef;
-            flex-grow: 1;
-            margin: 0 20px;
-            margin-top: 20px;
-        }
-
-        .step-item.active ~ .step-item .step-line {
-            background-color: #007bff;
-        }
-
-        .book-cover-placeholder {
-            width: 120px;
-            height: 160px;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
-
-        .placeholder-content {
-            text-align: center;
-        }
-
-        .question-block {
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        .question-block:hover {
-            background-color: #e9ecef;
-        }
-
-        .reward-preview p {
-            margin-bottom: 8px;
-        }
-    </style>
 </body>
 </html>

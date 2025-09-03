@@ -14,7 +14,7 @@
             <a class="navbar-brand fw-bold" href="../index.html">📚 BOOKCEN</a>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="profile.html">Settings</a>
-                <a class="nav-link" href="../index.html">Logout</a>
+                <a class="nav-link" href="#" onclick="logoutUser()">Logout</a>
             </div>
         </div>
     </nav>
@@ -23,7 +23,7 @@
         <!-- Welcome Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <h2 class="text-primary">Welcome back, Parent! 👋</h2>
+                <h2 class="text-primary">Welcome back, <span id="parentName">Parent</span>! 👋</h2>
                 <p class="text-muted">Here's how your child is doing with their reading goals.</p>
             </div>
         </div>
@@ -35,7 +35,7 @@
                     <div class="card-body">
                         <div class="display-4 text-primary mb-2">📚</div>
                         <h5 class="card-title">Books Assigned</h5>
-                        <h3 class="text-primary mb-0" id="booksAssigned">3</h3>
+                        <h3 class="text-primary mb-0" id="booksAssigned">Loading...</h3>
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <div class="card-body">
                         <div class="display-4 text-success mb-2">✅</div>
                         <h5 class="card-title">Books Completed</h5>
-                        <h3 class="text-success mb-0" id="booksCompleted">1</h3>
+                        <h3 class="text-success mb-0" id="booksCompleted">Loading...</h3>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     <div class="card-body">
                         <div class="display-4 text-warning mb-2">💰</div>
                         <h5 class="card-title">Rewards Earned</h5>
-                        <h3 class="text-warning mb-0" id="rewardsEarned">$15</h3>
+                        <h3 class="text-warning mb-0" id="rewardsEarned">Loading...</h3>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     <div class="card-body">
                         <div class="display-4 text-info mb-2">🔥</div>
                         <h5 class="card-title">Reading Streak</h5>
-                        <h3 class="text-info mb-0" id="readingStreak">5 days</h3>
+                        <h3 class="text-info mb-0" id="readingStreak">Loading...</h3>
                     </div>
                 </div>
             </div>
@@ -106,58 +106,11 @@
                         <h5 class="mb-0">Current Reading List</h5>
                         <small class="text-muted">Your child's assignments</small>
                     </div>
-                    <div class="card-body">
-                        <!-- Book 1 -->
-                        <div class="row align-items-center mb-3 p-3 bg-light rounded">
-                            <div class="col-md-6">
-                                <h6 class="mb-1 fw-bold">Harry Potter and the Philosopher's Stone</h6>
-                                <small class="text-muted">by J.K. Rowling • Assigned 3 days ago</small>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="progress">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 75%">
-                                        75% Complete
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <span class="badge bg-warning fs-6">$10 Reward</span>
-                                <button class="btn btn-sm btn-outline-primary ms-2">Edit</button>
-                            </div>
-                        </div>
-
-                        <!-- Book 2 -->
-                        <div class="row align-items-center mb-3 p-3 bg-light rounded">
-                            <div class="col-md-6">
-                                <h6 class="mb-1 fw-bold">Wonder</h6>
-                                <small class="text-muted">by R.J. Palacio • Assigned 1 week ago</small>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="progress">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 25%">
-                                        25% Complete
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <span class="badge bg-warning fs-6">$8 Reward</span>
-                                <button class="btn btn-sm btn-outline-primary ms-2">Edit</button>
-                            </div>
-                        </div>
-
-                        <!-- Book 3 - Completed -->
-                        <div class="row align-items-center mb-3 p-3 bg-success bg-opacity-10 rounded border border-success border-opacity-25">
-                            <div class="col-md-6">
-                                <h6 class="mb-1 fw-bold">Dog Man: Mothering Heights</h6>
-                                <small class="text-muted">by Dav Pilkey • Completed 2 days ago</small>
-                            </div>
-                            <div class="col-md-3">
-                                <span class="badge bg-success fs-6">✅ Completed</span>
-                            </div>
-                            <div class="col-md-3 text-end">
-                                <span class="badge bg-success fs-6">$5 Earned</span>
-                                <button class="btn btn-sm btn-outline-success ms-2">View Quiz</button>
-                            </div>
+                    <div class="card-body" id="booksList">
+                        <!-- Books will be loaded here dynamically -->
+                        <div class="text-center text-muted">
+                            <div class="spinner-border mb-2" role="status"></div>
+                            <p>Loading your child's reading list...</p>
                         </div>
                     </div>
                 </div>
@@ -172,27 +125,11 @@
                         <h5 class="mb-0">Recent Activity</h5>
                     </div>
                     <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Quiz Completed</div>
-                                    Your child completed the quiz for "Dog Man: Mothering Heights" with a score of 4/5
-                                </div>
-                                <small class="text-muted">2 days ago</small>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Book Started</div>
-                                    Your child started reading "Harry Potter and the Philosopher's Stone"
-                                </div>
-                                <small class="text-muted">3 days ago</small>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Reward Earned</div>
-                                    $5 reward earned for completing "Dog Man: Mothering Heights"
-                                </div>
-                                <small class="text-muted">2 days ago</small>
+                        <div class="list-group list-group-flush" id="activityList">
+                            <!-- Activity will be loaded here dynamically -->
+                            <div class="text-center text-muted">
+                                <div class="spinner-border mb-2" role="status"></div>
+                                <p>Loading recent activity...</p>
                             </div>
                         </div>
                     </div>
@@ -200,29 +137,18 @@
             </div>
         </div>
 
-        <!-- Child Quick View (if multiple children later) -->
+        <!-- Child Quick View -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">Child Overview</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 text-center">
-                                <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                    <span class="text-white fs-4">👦</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="mb-1">Alex (Age 8)</h6>
-                                <p class="mb-0 text-muted">Reading Level: Grade 3 • Favorite Genre: Adventure</p>
-                            </div>
-                            <div class="col-md-4 text-end">
-                                <button class="btn btn-outline-primary" onclick="switchToChildView()">
-                                    Switch to Child View
-                                </button>
-                            </div>
+                    <div class="card-body" id="childOverview">
+                        <!-- Child info will be loaded here dynamically -->
+                        <div class="text-center text-muted">
+                            <div class="spinner-border mb-2" role="status"></div>
+                            <p>Loading child information...</p>
                         </div>
                     </div>
                 </div>
@@ -233,47 +159,294 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
-    <script>
-        // Parent Dashboard JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Parent Dashboard loaded!');
-            updateDashboardStats();
+    <!-- Firebase Integration -->
+    <script type="module">
+        // Import Firebase functions
+        import { auth, db, getUserProfile } from '../js/firebase-config.js';
+        import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { collection, query, where, getDocs, doc, getDoc, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        // Global variables
+        let currentUser = null;
+        let currentUserProfile = null;
+
+        // Authentication state observer
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const profile = await getUserProfile(user.uid);
+                if (profile && profile.type === 'parent') {
+                    currentUserProfile = profile;
+                    document.getElementById('parentName').textContent = profile.name || 'Parent';
+                    await loadDashboardData(user.uid);
+                } else {
+                    // Not a parent or no profile
+                    alert('Access denied. This dashboard is for parents only.');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                // Not logged in
+                window.location.href = 'login.html';
+            }
         });
 
-        // Function to update dashboard statistics
-        function updateDashboardStats() {
-            // In a real app, this would fetch from your database
-            // For now, we'll use sample data
-            
-            const stats = {
-                booksAssigned: 3,
-                booksCompleted: 1,
-                rewardsEarned: 15,
-                readingStreak: 5
-            };
-
-            // Update the display
-            document.getElementById('booksAssigned').textContent = stats.booksAssigned;
-            document.getElementById('booksCompleted').textContent = stats.booksCompleted;
-            document.getElementById('rewardsEarned').textContent = `$${stats.rewardsEarned}`;
-            document.getElementById('readingStreak').textContent = `${stats.readingStreak} days`;
-        }
-
-        // Function to switch to child view
-        function switchToChildView() {
-            if(confirm('Switch to your child\'s dashboard?')) {
-                window.location.href = 'child-dashboard.html';
+        // Load all dashboard data
+        async function loadDashboardData(parentUid) {
+            try {
+                await Promise.all([
+                    loadStats(parentUid),
+                    loadBooksList(parentUid),
+                    loadRecentActivity(parentUid),
+                    loadChildOverview(parentUid)
+                ]);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('Error loading dashboard data. Please refresh the page.');
             }
         }
 
-        // Function to handle editing books
-        function editBook(bookId) {
-            alert(`Edit book functionality coming soon! Book ID: ${bookId}`);
-            // In the future, this will open an edit modal or redirect to edit page
+        // Load statistics
+        async function loadStats(parentUid) {
+            try {
+                // Get children for this parent
+                const childrenQuery = query(
+                    collection(db, 'users'), 
+                    where('parentId', '==', parentUid),
+                    where('type', '==', 'child')
+                );
+                const childrenSnapshot = await getDocs(childrenQuery);
+                
+                let totalBooksAssigned = 0;
+                let totalBooksCompleted = 0;
+                let totalRewardsEarned = 0;
+                let maxStreak = 0;
+                
+                // For each child, calculate stats
+                for (const childDoc of childrenSnapshot.docs) {
+                    const childId = childDoc.id;
+                    
+                    // Get assignments for this child
+                    const assignmentsQuery = query(
+                        collection(db, 'assignments'),
+                        where('childId', '==', childId)
+                    );
+                    const assignmentsSnapshot = await getDocs(assignmentsQuery);
+                    
+                    assignmentsSnapshot.forEach((assignmentDoc) => {
+                        const assignment = assignmentDoc.data();
+                        totalBooksAssigned++;
+                        
+                        if (assignment.status === 'completed') {
+                            totalBooksCompleted++;
+                            totalRewardsEarned += assignment.totalReward || 0;
+                        }
+                    });
+
+                    // Get reading streak (simplified - just use a sample number for now)
+                    const childData = childDoc.data();
+                    const childStreak = childData.readingStreak || 0;
+                    if (childStreak > maxStreak) {
+                        maxStreak = childStreak;
+                    }
+                }
+                
+                // Update display
+                document.getElementById('booksAssigned').textContent = totalBooksAssigned;
+                document.getElementById('booksCompleted').textContent = totalBooksCompleted;
+                document.getElementById('rewardsEarned').textContent = `$${totalRewardsEarned}`;
+                document.getElementById('readingStreak').textContent = `${maxStreak} days`;
+                
+                // Animate progress bars
+                setTimeout(animateProgressBars, 200);
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('booksAssigned').textContent = '0';
+                document.getElementById('booksCompleted').textContent = '0';
+                document.getElementById('rewardsEarned').textContent = '$0';
+                document.getElementById('readingStreak').textContent = '0 days';
+            }
         }
 
-        // Add some interactivity to progress bars
+        // Load books list
+        async function loadBooksList(parentUid) {
+            try {
+                const booksListContainer = document.getElementById('booksList');
+                
+                // Get children
+                const childrenQuery = query(
+                    collection(db, 'users'), 
+                    where('parentId', '==', parentUid),
+                    where('type', '==', 'child')
+                );
+                const childrenSnapshot = await getDocs(childrenQuery);
+                
+                if (childrenSnapshot.empty) {
+                    booksListContainer.innerHTML = `
+                        <div class="text-center text-muted">
+                            <p>No children found. <a href="add-child.html">Add a child</a> to get started.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let booksHtml = '';
+                
+                for (const childDoc of childrenSnapshot.docs) {
+                    const childId = childDoc.id;
+                    const childData = childDoc.data();
+                    
+                    // Get assignments for this child
+                    const assignmentsQuery = query(
+                        collection(db, 'assignments'),
+                        where('childId', '==', childId)
+                    );
+                    const assignmentsSnapshot = await getDocs(assignmentsQuery);
+                    
+                    if (assignmentsSnapshot.empty) continue;
+                    
+                    assignmentsSnapshot.forEach((assignmentDoc) => {
+                        const assignment = assignmentDoc.data();
+                        const assignmentId = assignmentDoc.id;
+                        
+                        const progressWidth = assignment.progress || 0;
+                        const statusClass = assignment.status === 'completed' ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-light';
+                        const statusBadge = assignment.status === 'completed' ? 
+                            '<span class="badge bg-success fs-6">✅ Completed</span>' : 
+                            `<div class="progress"><div class="progress-bar bg-primary" role="progressbar" style="width: ${progressWidth}%">${progressWidth}% Complete</div></div>`;
+                        
+                        booksHtml += `
+                            <div class="row align-items-center mb-3 p-3 ${statusClass} rounded">
+                                <div class="col-md-6">
+                                    <h6 class="mb-1 fw-bold">${assignment.bookTitle || 'Unknown Book'}</h6>
+                                    <small class="text-muted">by ${assignment.bookAuthor || 'Unknown Author'} • Assigned to ${childData.name || 'Child'} • ${formatDate(assignment.assignedAt)}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    ${statusBadge}
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <span class="badge bg-warning fs-6">$${assignment.totalReward || 0} Reward</span>
+                                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="editBook('${assignmentId}')">Edit</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                if (booksHtml === '') {
+                    booksHtml = `
+                        <div class="text-center text-muted">
+                            <p>No books assigned yet. <a href="add-book.html">Add a book</a> to get started!</p>
+                        </div>
+                    `;
+                }
+                
+                booksListContainer.innerHTML = booksHtml;
+                
+            } catch (error) {
+                console.error('Error loading books list:', error);
+                document.getElementById('booksList').innerHTML = `
+                    <div class="alert alert-danger">
+                        Error loading books. Please refresh the page.
+                    </div>
+                `;
+            }
+        }
+
+        // Load recent activity
+        async function loadRecentActivity(parentUid) {
+            try {
+                const activityContainer = document.getElementById('activityList');
+                
+                // For now, show placeholder activity
+                // In a real app, you'd query an 'activity' collection
+                activityContainer.innerHTML = `
+                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Dashboard Loaded</div>
+                            Welcome to your parent dashboard! Activity tracking coming soon.
+                        </div>
+                        <small class="text-muted">Just now</small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading activity:', error);
+                document.getElementById('activityList').innerHTML = `
+                    <div class="alert alert-danger">Error loading activity</div>
+                `;
+            }
+        }
+
+        // Load child overview
+        async function loadChildOverview(parentUid) {
+            try {
+                const overviewContainer = document.getElementById('childOverview');
+                
+                // Get children
+                const childrenQuery = query(
+                    collection(db, 'users'), 
+                    where('parentId', '==', parentUid),
+                    where('type', '==', 'child')
+                );
+                const childrenSnapshot = await getDocs(childrenQuery);
+                
+                if (childrenSnapshot.empty) {
+                    overviewContainer.innerHTML = `
+                        <div class="text-center text-muted">
+                            <p>No children found. <a href="add-child.html">Add a child</a> to get started.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let childrenHtml = '';
+                
+                childrenSnapshot.forEach((childDoc) => {
+                    const child = childDoc.data();
+                    childrenHtml += `
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-2 text-center">
+                                <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <span class="text-white fs-4">${child.gender === 'female' ? '👧' : '👦'}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-1">${child.name || 'Child'} (Age ${child.age || 'Unknown'})</h6>
+                                <p class="mb-0 text-muted">Reading Level: ${child.readingLevel || 'Not set'} • Favorite Genre: ${child.favoriteGenre || 'Not set'}</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-outline-primary" onclick="switchToChildView('${childDoc.id}')">
+                                    Switch to Child View
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                overviewContainer.innerHTML = childrenHtml;
+                
+            } catch (error) {
+                console.error('Error loading child overview:', error);
+                document.getElementById('childOverview').innerHTML = `
+                    <div class="alert alert-danger">Error loading child information</div>
+                `;
+            }
+        }
+
+        // Utility functions
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown date';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString();
+        }
+
+        function showError(message) {
+            // You could implement a toast notification system here
+            console.error(message);
+        }
+
+        // Keep these functions from your original code
         function animateProgressBars() {
             const progressBars = document.querySelectorAll('.progress-bar');
             progressBars.forEach(bar => {
@@ -286,8 +459,50 @@
             });
         }
 
-        // Animate progress bars when page loads
-        setTimeout(animateProgressBars, 500);
+        // Make functions available globally for onclick handlers
+        window.logoutUser = async function() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Error logging out');
+                }
+            }
+        };
+
+        window.switchToChildView = function(childId) {
+            if(confirm('Switch to your child\'s dashboard?')) {
+                // Store child ID in session storage so child dashboard knows which child
+                sessionStorage.setItem('currentChildId', childId);
+                window.location.href = 'child-dashboard.html';
+            }
+        };
+
+        window.editBook = async function(assignmentId) {
+            try {
+                const assignmentDoc = await getDoc(doc(db, 'assignments', assignmentId));
+                
+                if (assignmentDoc.exists()) {
+                    const assignment = assignmentDoc.data();
+                    alert(`Book: ${assignment.bookTitle}\nReward: $${assignment.totalReward}\nStatus: ${assignment.status}\n\nEdit functionality coming soon!`);
+                    
+                    // TODO: Open edit modal or redirect to edit page
+                } else {
+                    alert('Assignment not found');
+                }
+            } catch (error) {
+                console.error('Error loading book details:', error);
+                alert('Error loading book details');
+            }
+        };
+
+        // DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Parent Dashboard loaded with Firebase!');
+        });
+        
     </script>
 </body>
 </html>
