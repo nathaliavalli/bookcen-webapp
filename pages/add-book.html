@@ -99,11 +99,20 @@
             border: 1px solid #dee2e6;
             border-radius: 8px;
             margin-bottom: 10px;
+            cursor: pointer;
         }
 
         .quiz-tab.active {
             border-color: #007bff;
             background-color: rgba(13, 110, 253, 0.05);
+        }
+
+        .child-selection-highlight {
+            background-color: #e7f3ff;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -166,6 +175,8 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-8">
+                                <!-- Child selection will be dynamically inserted here -->
+                                
                                 <div class="mb-3">
                                     <label for="bookTitle" class="form-label">Book Title *</label>
                                     <input type="text" class="form-control" id="bookTitle" 
@@ -436,26 +447,383 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
-    <script>
+    <!-- Firebase Integration Script -->
+    <script type="module">
+        // Import Firebase functions
+        import { auth, db, getUserProfile } from '../js/firebase-config.js';
+        import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { 
+            collection, 
+            addDoc, 
+            query, 
+            where, 
+            getDocs, 
+            serverTimestamp,
+            doc,
+            updateDoc
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        // Global variables
+        let currentUser = null;
+        let currentUserProfile = null;
+        let availableChildren = [];
+        let selectedChildId = null;
+
+        // Form state variables
         let currentStep = 1;
         let chapters = [];
         let chapterQuizzes = {};
         let currentQuizChapter = null;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Add Book page loaded with chapter support!');
-            updateSummary();
-            
-            // Add event listeners for real-time updates
-            document.getElementById('bookTitle').addEventListener('input', updateSummary);
-            document.getElementById('bookAuthor').addEventListener('input', updateSummary);
-            document.getElementById('completionBonus').addEventListener('input', updateSummary);
-            document.getElementById('passingScore').addEventListener('change', updateSummary);
+        // Authentication state observer
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const profile = await getUserProfile(user.uid);
+                if (profile && profile.type === 'parent') {
+                    currentUserProfile = profile;
+                    await loadChildrenList(user.uid);
+                } else {
+                    alert('Access denied. This page is for parents only.');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
+        // Load children for this parent
+        async function loadChildrenList(parentUid) {
+            try {
+                const childrenQuery = query(
+                    collection(db, 'users'), 
+                    where('parentId', '==', parentUid),
+                    where('type', '==', 'child')
+                );
+                const childrenSnapshot = await getDocs(childrenQuery);
+                
+                availableChildren = [];
+                childrenSnapshot.forEach((doc) => {
+                    availableChildren.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Add child selection to Step 1 if there are multiple children
+                if (availableChildren.length > 1) {
+                    addChildSelectionToForm();
+                } else if (availableChildren.length === 1) {
+                    selectedChildId = availableChildren[0].id;
+                    showSingleChildInfo();
+                } else {
+                    // No children found
+                    alert('No children found. Please add a child first.');
+                    window.location.href = 'parent-dashboard.html';
+                    return;
+                }
+
+                console.log('Children loaded:', availableChildren);
+            } catch (error) {
+                console.error('Error loading children:', error);
+                alert('Error loading children. Please refresh the page.');
+            }
+        }
+
+        // Add child selection dropdown to the form
+        function addChildSelectionToForm() {
+            const bookDetailsCard = document.querySelector('#stepContent1 .card-body .row .col-md-8');
+            
+            const childSelectionHtml = `
+                <div class="child-selection-highlight mb-4">
+                    <label for="childSelect" class="form-label fw-bold">👶 Assign to Child *</label>
+                    <select class="form-select" id="childSelect" required onchange="updateSelectedChild(this.value)">
+                        <option value="">Select a child...</option>
+                        ${availableChildren.map(child => 
+                            `<option value="${child.id}">${child.name} (Age ${child.age || 'Unknown'})</option>`
+                        ).join('')}
+                    </select>
+                    <small class="text-muted">Choose which child will receive this book assignment</small>
+                </div>
+            `;
+            
+            bookDetailsCard.insertAdjacentHTML('afterbegin', childSelectionHtml);
+        }
+
+        // Show single child info when there's only one child
+        function showSingleChildInfo() {
+            const bookDetailsCard = document.querySelector('#stepContent1 .card-body .row .col-md-8');
+            const child = availableChildren[0];
+            
+            const childInfoHtml = `
+                <div class="child-selection-highlight mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <span class="text-white">${child.gender === 'female' ? '👧' : '👦'}</span>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Assigning to: ${child.name}</h6>
+                            <small class="text-muted">Age ${child.age || 'Unknown'} • Reading Level: ${child.readingLevel || 'Not set'}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            bookDetailsCard.insertAdjacentHTML('afterbegin', childInfoHtml);
+        }
+
+        // Update selected child
+        window.updateSelectedChild = function(childId) {
+            selectedChildId = childId;
+            console.log('Selected child:', childId);
+        };
+
+        // Save book assignment to Firebase
+        async function saveBookToFirebase(bookData) {
+            try {
+                if (!selectedChildId) {
+                    throw new Error('No child selected');
+                }
+
+                // Create the assignment document
+                const assignmentData = {
+                    // Basic book info
+                    bookTitle: bookData.title,
+                    bookAuthor: bookData.author,
+                    bookPages: parseInt(bookData.pages) || null,
+                    readingLevel: bookData.level || null,
+                    genre: bookData.genre || null,
+                    dueDate: bookData.dueDate ? new Date(bookData.dueDate) : null,
+                    
+                    // Assignment info
+                    childId: selectedChildId,
+                    parentId: currentUser.uid,
+                    assignedAt: serverTimestamp(),
+                    status: 'assigned', // assigned, in_progress, completed
+                    progress: 0,
+                    
+                    // Reward settings
+                    passingScore: parseInt(bookData.settings.passingScore),
+                    maxAttempts: bookData.settings.maxAttempts === 'unlimited' ? null : parseInt(bookData.settings.maxAttempts),
+                    completionBonus: parseFloat(bookData.settings.completionBonus),
+                    notifyChild: bookData.settings.notifyChild,
+                    
+                    // Calculate total possible reward
+                    totalReward: bookData.chapters.reduce((sum, ch) => sum + ch.reward, 0) + parseFloat(bookData.settings.completionBonus),
+                    
+                    // Metadata
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                // Save the main assignment
+                const assignmentRef = await addDoc(collection(db, 'assignments'), assignmentData);
+                console.log('Assignment created with ID:', assignmentRef.id);
+
+                // Save chapters
+                const chaptersData = bookData.chapters.map(chapter => ({
+                    assignmentId: assignmentRef.id,
+                    childId: selectedChildId,
+                    chapterNumber: chapter.number,
+                    chapterTitle: chapter.title,
+                    reward: chapter.reward,
+                    status: 'locked', // locked, unlocked, completed
+                    attempts: 0,
+                    bestScore: 0,
+                    quizCompleted: false,
+                    createdAt: serverTimestamp()
+                }));
+
+                // Save all chapters
+                const chapterPromises = chaptersData.map(chapterData => 
+                    addDoc(collection(db, 'chapters'), chapterData)
+                );
+                const chapterRefs = await Promise.all(chapterPromises);
+                console.log('Chapters created:', chapterRefs.length);
+
+                // Save quizzes for each chapter
+                const quizPromises = [];
+                chapterRefs.forEach((chapterRef, index) => {
+                    const chapter = bookData.chapters[index];
+                    const chapterQuizData = bookData.quizzes[chapter.id] || [];
+                    
+                    chapterQuizData.forEach((question, questionIndex) => {
+                        const questionData = {
+                            chapterId: chapterRef.id,
+                            assignmentId: assignmentRef.id,
+                            childId: selectedChildId,
+                            questionNumber: questionIndex + 1,
+                            question: question.question,
+                            options: question.options.filter(opt => opt.trim() !== ''), // Remove empty options
+                            correctAnswerIndex: 0, // First option is always correct as per your design
+                            createdAt: serverTimestamp()
+                        };
+                        
+                        quizPromises.push(addDoc(collection(db, 'quiz_questions'), questionData));
+                    });
+                });
+
+                await Promise.all(quizPromises);
+                console.log('Quiz questions created:', quizPromises.length);
+
+                // Unlock the first chapter
+                if (chapterRefs.length > 0) {
+                    const firstChapterRef = chapterRefs[0];
+                    await updateDoc(doc(db, 'chapters', firstChapterRef.id), {
+                        status: 'unlocked',
+                        updatedAt: serverTimestamp()
+                    });
+                }
+
+                // Optional: Create notification for child if enabled
+                if (bookData.settings.notifyChild) {
+                    await createNotificationForChild(selectedChildId, assignmentRef.id, bookData.title);
+                }
+
+                return assignmentRef.id;
+
+            } catch (error) {
+                console.error('Error saving book to Firebase:', error);
+                throw error;
+            }
+        }
+
+        // Create notification for child (optional)
+        async function createNotificationForChild(childId, assignmentId, bookTitle) {
+            try {
+                const notificationData = {
+                    childId: childId,
+                    type: 'new_book_assigned',
+                    title: 'New Book Assigned! 📚',
+                    message: `You have a new book to read: "${bookTitle}". Start reading to earn rewards!`,
+                    assignmentId: assignmentId,
+                    read: false,
+                    createdAt: serverTimestamp()
+                };
+
+                await addDoc(collection(db, 'notifications'), notificationData);
+                console.log('Notification created for child');
+            } catch (error) {
+                console.error('Error creating notification:', error);
+                // Don't throw error here, as it's optional
+            }
+        }
+
+        // Form submission
+        document.getElementById('addBookForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '⏳ Saving to Database...';
+            submitBtn.disabled = true;
+            
+            try {
+                if (!selectedChildId) {
+                    throw new Error('Please select a child to assign this book to');
+                }
+
+                if (!validateCurrentStep()) {
+                    throw new Error('Please complete all required fields');
+                }
+                
+                // Collect all form data
+                const bookData = {
+                    title: document.getElementById('bookTitle').value,
+                    author: document.getElementById('bookAuthor').value,
+                    pages: document.getElementById('bookPages').value,
+                    level: document.getElementById('readingLevel').value,
+                    genre: document.getElementById('bookGenre').value,
+                    dueDate: document.getElementById('dueDate').value,
+                    chapters: chapters,
+                    quizzes: chapterQuizzes,
+                    settings: {
+                        passingScore: document.getElementById('passingScore').value,
+                        maxAttempts: document.getElementById('maxAttempts').value,
+                        completionBonus: document.getElementById('completionBonus').value,
+                        notifyChild: document.getElementById('notifyChild').checked
+                    }
+                };
+                
+                // Save to Firebase
+                const assignmentId = await saveBookToFirebase(bookData);
+                
+                // Get selected child name for display
+                const selectedChild = availableChildren.find(child => child.id === selectedChildId);
+                
+                // Show success message
+                alert(`🎉 Book "${bookData.title}" successfully assigned to ${selectedChild ? selectedChild.name : 'child'}!\n\n` +
+                      `✅ ${chapters.length} chapters created\n` +
+                      `✅ ${Object.values(chapterQuizzes).reduce((sum, q) => sum + q.length, 0)} quiz questions added\n` +
+                      `💰 Total possible rewards: ${(chapters.reduce((sum, ch) => sum + ch.reward, 0) + parseFloat(bookData.settings.completionBonus)).toFixed(2)}\n\n` +
+                      `Assignment ID: ${assignmentId}\n` +
+                      `${selectedChild ? selectedChild.name : 'Your child'} will receive a notification and can start reading!`);
+                
+                // Redirect back to dashboard
+                setTimeout(() => {
+                    window.location.href = 'parent-dashboard.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error saving book:', error);
+                alert(`Error saving book: ${error.message}`);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Validation function
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const title = document.getElementById('bookTitle').value;
+                const author = document.getElementById('bookAuthor').value;
+                
+                if (!title || !author) {
+                    alert('Please fill in the required fields: Book Title and Author');
+                    return false;
+                }
+                
+                if (availableChildren.length > 1 && !selectedChildId) {
+                    alert('Please select a child to assign this book to');
+                    return false;
+                }
+            } else if (currentStep === 2) {
+                if (chapters.length === 0) {
+                    alert('Please add at least one chapter');
+                    return false;
+                }
+            } else if (currentStep === 3) {
+                for (let chapter of chapters) {
+                    const chapterQuestions = chapterQuizzes[chapter.id] || [];
+                    if (chapterQuestions.length < 3) {
+                        alert(`Please add at least 3 questions for ${chapter.title}`);
+                        return false;
+                    }
+                    
+                    // Validate each question has content
+                    for (let i = 0; i < chapterQuestions.length; i++) {
+                        const question = chapterQuestions[i];
+                        if (!question.question.trim()) {
+                            alert(`Question ${i + 1} in ${chapter.title} is missing the question text`);
+                            return false;
+                        }
+                        
+                        const validOptions = question.options.filter(opt => opt.trim() !== '').length;
+                        if (validOptions < 2) {
+                            alert(`Question ${i + 1} in ${chapter.title} needs at least 2 answer options`);
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         // Step navigation functions
-        function nextStep() {
+        window.nextStep = function() {
             if (validateCurrentStep()) {
                 currentStep++;
                 showStep(currentStep);
@@ -466,14 +834,14 @@
                     generateChapterQuizTabs();
                 }
             }
-        }
+        };
 
-        function previousStep() {
+        window.previousStep = function() {
             currentStep--;
             showStep(currentStep);
             updateStepIndicators();
             updateNavigationButtons();
-        }
+        };
 
         function showStep(step) {
             document.querySelectorAll('.step-content').forEach(content => {
@@ -509,34 +877,8 @@
             }
         }
 
-        // Validation function
-        function validateCurrentStep() {
-            if (currentStep === 1) {
-                const title = document.getElementById('bookTitle').value;
-                const author = document.getElementById('bookAuthor').value;
-                
-                if (!title || !author) {
-                    alert('Please fill in the required fields: Book Title and Author');
-                    return false;
-                }
-            } else if (currentStep === 2) {
-                if (chapters.length === 0) {
-                    alert('Please add at least one chapter');
-                    return false;
-                }
-            } else if (currentStep === 3) {
-                for (let chapter of chapters) {
-                    if (!chapterQuizzes[chapter.id] || chapterQuizzes[chapter.id].length < 3) {
-                        alert(`Please add at least 3 questions for ${chapter.title}`);
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        // Chapter management
-        function addChapter() {
+        // Chapter management functions
+        window.addChapter = function() {
             const title = document.getElementById('chapterTitle').value;
             const number = parseInt(document.getElementById('chapterNumber').value);
             const reward = parseFloat(document.getElementById('chapterReward').value);
@@ -564,16 +906,15 @@
             // Auto-increment for next chapter
             document.getElementById('chapterNumber').value = number + 1;
             document.getElementById('chapterTitle').value = '';
-        }
+        };
 
-        function generateChapters() {
+        window.generateChapters = function() {
             const bookTitle = document.getElementById('bookTitle').value;
             if (!bookTitle) {
                 alert('Please enter a book title first');
                 return;
             }
             
-            // Sample auto-generation based on common book structures
             const chapterCount = prompt('How many chapters does this book have?', '10');
             if (!chapterCount || isNaN(chapterCount)) return;
             
@@ -595,16 +936,16 @@
             updateChapterList();
             updateChapterCounters();
             updateSummary();
-        }
+        };
 
-        function removeChapter(chapterId) {
+        window.removeChapter = function(chapterId) {
             chapters = chapters.filter(ch => ch.id !== chapterId);
             delete chapterQuizzes[chapterId];
             
             updateChapterList();
             updateChapterCounters();
             updateSummary();
-        }
+        };
 
         function updateChapterList() {
             const listElement = document.getElementById('chapterList');
@@ -620,7 +961,7 @@
                     <div class="chapter-item p-2 mb-2 rounded d-flex justify-content-between align-items-center">
                         <div>
                             <strong>Ch. ${chapter.number}:</strong> ${chapter.title}<br>
-                            <small class="text-success">$${chapter.reward.toFixed(2)}</small>
+                            <small class="text-success">${chapter.reward.toFixed(2)}</small>
                         </div>
                         <button class="btn btn-outline-danger btn-sm" onclick="removeChapter('${chapter.id}')">
                             ✕
@@ -640,8 +981,8 @@
             document.getElementById('totalRewards').textContent = totalRewards.toFixed(2);
         }
 
-        // Quiz management
-        function generateChapterQuizTabs() {
+        // Quiz management functions
+        window.generateChapterQuizTabs = function() {
             const tabsElement = document.getElementById('chapterQuizTabs');
             
             if (chapters.length === 0) {
@@ -671,28 +1012,25 @@
             
             tabsElement.innerHTML = html;
             
-            // Auto-select first chapter
             if (chapters.length > 0) {
                 selectChapterQuiz(chapters[0].id);
             }
-        }
+        };
 
-        function selectChapterQuiz(chapterId) {
+        window.selectChapterQuiz = function(chapterId) {
             currentQuizChapter = chapterId;
             const chapter = chapters.find(ch => ch.id === chapterId);
             
-            // Update tab selection
             document.querySelectorAll('.quiz-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.closest('.quiz-tab').classList.add('active');
             
-            // Update quiz content
             document.getElementById('currentChapterTitle').textContent = `${chapter.title} - Quiz Questions`;
             document.getElementById('currentQuizContent').style.display = 'block';
             
             renderQuizQuestions(chapterId);
-        }
+        };
 
         function renderQuizQuestions(chapterId) {
             const questionsElement = document.getElementById('quizQuestions');
@@ -716,7 +1054,7 @@
             questionsElement.innerHTML = html;
         }
 
-        function addQuizQuestion() {
+        window.addQuizQuestion = function() {
             if (!currentQuizChapter) {
                 alert('Please select a chapter first');
                 return;
@@ -735,10 +1073,10 @@
             chapterQuizzes[currentQuizChapter].push(newQuestion);
             renderQuizQuestions(currentQuizChapter);
             updateQuizSummary();
-            generateChapterQuizTabs(); // Refresh tabs to show updated count
-        }
+            generateChapterQuizTabs();
+        };
 
-        function removeQuizQuestion(questionIndex) {
+        window.removeQuizQuestion = function(questionIndex) {
             if (!currentQuizChapter) return;
             
             if (chapterQuizzes[currentQuizChapter].length <= 3) {
@@ -749,8 +1087,8 @@
             chapterQuizzes[currentQuizChapter].splice(questionIndex, 1);
             renderQuizQuestions(currentQuizChapter);
             updateQuizSummary();
-            generateChapterQuizTabs(); // Refresh tabs to show updated count
-        }
+            generateChapterQuizTabs();
+        };
 
         function createQuestionHtml(questionNum, questionData) {
             return `
@@ -794,7 +1132,7 @@
             `;
         }
 
-        function updateQuestionData(questionIndex, type, value, optionIndex = null) {
+        window.updateQuestionData = function(questionIndex, type, value, optionIndex = null) {
             if (!currentQuizChapter) return;
             
             const questions = chapterQuizzes[currentQuizChapter];
@@ -805,7 +1143,7 @@
             } else if (type === 'option' && optionIndex !== null) {
                 questions[questionIndex].options[optionIndex] = value;
             }
-        }
+        };
 
         // Summary functions
         function updateSummary() {
@@ -851,44 +1189,18 @@
             summaryElement.innerHTML = summary;
         }
 
-        // Form submission
-        document.getElementById('addBookForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Add Book page loaded with Firebase integration!');
+            updateSummary();
             
-            if (validateCurrentStep()) {
-                // Collect all form data
-                const bookData = {
-                    title: document.getElementById('bookTitle').value,
-                    author: document.getElementById('bookAuthor').value,
-                    pages: document.getElementById('bookPages').value,
-                    level: document.getElementById('readingLevel').value,
-                    genre: document.getElementById('bookGenre').value,
-                    dueDate: document.getElementById('dueDate').value,
-                    chapters: chapters,
-                    quizzes: chapterQuizzes,
-                    settings: {
-                        passingScore: document.getElementById('passingScore').value,
-                        maxAttempts: document.getElementById('maxAttempts').value,
-                        completionBonus: document.getElementById('completionBonus').value,
-                        notifyChild: document.getElementById('notifyChild').checked
-                    }
-                };
-                
-                // Here you would send this data to your backend
-                console.log('Book data to save:', bookData);
-                
-                alert(`🎉 Book "${bookData.title}" successfully assigned!\n\n` +
-                      `✅ ${chapters.length} chapters created\n` +
-                      `✅ ${Object.values(chapterQuizzes).reduce((sum, q) => sum + q.length, 0)} quiz questions added\n` +
-                      `💰 Total possible rewards: ${(chapters.reduce((sum, ch) => sum + ch.reward, 0) + parseFloat(bookData.settings.completionBonus)).toFixed(2)}\n\n` +
-                      `Your child will receive a notification and can start reading!`);
-                
-                // Redirect back to dashboard
-                setTimeout(() => {
-                    window.location.href = 'parent-dashboard.html';
-                }, 2000);
-            }
+            // Add event listeners for real-time updates
+            document.getElementById('bookTitle').addEventListener('input', updateSummary);
+            document.getElementById('bookAuthor').addEventListener('input', updateSummary);
+            document.getElementById('completionBonus').addEventListener('input', updateSummary);
+            document.getElementById('passingScore').addEventListener('change', updateSummary);
         });
+
     </script>
 </body>
 </html>

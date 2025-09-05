@@ -15,11 +15,42 @@
                     <div class="card-body">
                         <h2 class="card-title text-center text-primary mb-4">Login to BOOKCEN</h2>
                         
-                        <!-- Login Form -->
+                        <!-- Demo Instructions -->
+                        <div class="alert alert-info">
+                            <h6>Quick Demo Setup:</h6>
+                            <ol class="mb-0">
+                                <li>Click "Setup Demo Data" first (creates parent account)</li>
+                                <li>Then use the login buttons below</li>
+                            </ol>
+                        </div>
+
+                        <!-- Setup Demo Data Button -->
+                        <div class="text-center mb-3">
+                            <button type="button" class="btn btn-success btn-lg w-100" id="setupDemo">
+                                🚀 Setup Demo Data (Click First!)
+                            </button>
+                        </div>
+
+                        <hr>
+
+                        <!-- Quick Demo Login Buttons -->
+                        <div class="text-center mb-3">
+                            <p class="text-muted mb-2">Then Login:</p>
+                            <button type="button" class="btn btn-outline-primary me-2" onclick="quickLogin('parent')" id="parentLoginBtn">
+                                👨‍👩‍👧‍👦 Login as Parent
+                            </button>
+                            <button type="button" class="btn btn-outline-success" onclick="quickLogin('child')" id="childLoginBtn">
+                                👧 Login as Child
+                            </button>
+                        </div>
+
+                        <hr>
+
+                        <!-- Manual Login Form -->
                         <form id="loginForm">
                             <div class="mb-3">
                                 <label for="userType" class="form-label">I am a:</label>
-                                <select class="form-select" id="userType" required>
+                                <select class="form-select" id="userType">
                                     <option value="">Choose...</option>
                                     <option value="parent">Parent</option>
                                     <option value="child">Child</option>
@@ -28,43 +59,21 @@
                             
                             <div class="mb-3">
                                 <label for="username" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="username" required placeholder="your@email.com">
-                                <small class="text-muted">For demo: try parent@test.com or child@test.com</small>
+                                <input type="email" class="form-control" id="username" placeholder="Enter email">
                             </div>
                             
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" required placeholder="Enter password">
-                                <small class="text-muted">For demo: use any password (accounts auto-created)</small>
+                                <input type="password" class="form-control" id="password" placeholder="Enter password">
                             </div>
                             
                             <button type="submit" class="btn btn-primary w-100 mb-3" id="loginBtn">
-                                Login
+                                Manual Login
                             </button>
                         </form>
 
-                        <!-- Quick Demo Login Buttons -->
-                        <div class="text-center mb-3">
-                            <hr>
-                            <p class="text-muted mb-2">Quick Demo Access:</p>
-                            <button type="button" class="btn btn-outline-primary me-2" onclick="quickLogin('parent')">
-                                Demo as Parent
-                            </button>
-                            <button type="button" class="btn btn-outline-success" onclick="quickLogin('child')">
-                                Demo as Child
-                            </button>
-                        </div>
-
                         <div class="text-center mt-4">
                             <a href="../index.html">← Back to Home</a>
-                        </div>
-
-                        <!-- Demo Account Info -->
-                        <div class="alert alert-info mt-3">
-                            <small>
-                                <strong>Demo Mode:</strong> If an account doesn't exist, it will be created automatically.<br>
-                                <strong>Test Accounts:</strong> parent@test.com / child@test.com with any password
-                            </small>
                         </div>
                     </div>
                 </div>
@@ -78,8 +87,186 @@
         // Import Firebase functions
         import { auth, db, getUserProfile, createUserProfile } from '../js/firebase-config.js';
         import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-        // Handle form submission
+        let demoSetupComplete = false;
+
+        // Setup demo data button
+        document.getElementById('setupDemo').addEventListener('click', async function() {
+            await setupDemoData();
+        });
+
+        // Setup demo data function
+        async function setupDemoData() {
+            try {
+                showMessage('Setting up demo data...', 'info');
+                showLoading('setupDemo', true);
+
+                // Create parent account
+                let parentCredential;
+                try {
+                    parentCredential = await createUserWithEmailAndPassword(auth, 'demo.parent@bookcen.com', 'password123');
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') {
+                        // Parent already exists, sign in to get the user
+                        parentCredential = await signInWithEmailAndPassword(auth, 'demo.parent@bookcen.com', 'password123');
+                        showMessage('Demo parent already exists. Creating child...', 'info');
+                    } else {
+                        throw error;
+                    }
+                }
+
+                const parentId = parentCredential.user.uid;
+
+                // Create parent profile
+                await createUserProfile(parentId, {
+                    type: 'parent',
+                    email: 'demo.parent@bookcen.com',
+                    name: 'Demo Parent'
+                });
+
+                // Sign out parent
+                await auth.signOut();
+
+                // Create child account
+                let childCredential;
+                try {
+                    childCredential = await createUserWithEmailAndPassword(auth, 'demo.child@bookcen.com', 'password123');
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') {
+                        showMessage('Demo accounts already exist!', 'success');
+                        demoSetupComplete = true;
+                        showLoading('setupDemo', false);
+                        enableLoginButtons();
+                        return;
+                    } else {
+                        throw error;
+                    }
+                }
+
+                const childId = childCredential.user.uid;
+
+                // Create child profile
+                await createUserProfile(childId, {
+                    type: 'child',
+                    email: 'demo.child@bookcen.com',
+                    name: 'Alex (Demo Child)',
+                    parentId: parentId,
+                    age: 8,
+                    readingLevel: 'Grade 3',
+                    favoriteGenre: 'Adventure',
+                    gender: 'male',
+                    readingStreak: 5,
+                    totalRewards: 15
+                });
+
+                // Create demo assignments
+                await createDemoAssignments(childId, parentId);
+
+                // Sign out child
+                await auth.signOut();
+
+                showMessage('✅ Demo data created successfully! Now you can login.', 'success');
+                demoSetupComplete = true;
+                enableLoginButtons();
+
+            } catch (error) {
+                console.error('Setup error:', error);
+                showMessage('❌ Setup failed: ' + error.message, 'danger');
+            } finally {
+                showLoading('setupDemo', false);
+            }
+        }
+
+        // Create demo assignments
+        async function createDemoAssignments(childId, parentId) {
+            const assignments = [
+                {
+                    childId: childId,
+                    parentId: parentId,
+                    bookId: 'book_dogman_1',
+                    bookTitle: 'Dog Man: Mothering Heights',
+                    bookAuthor: 'Dav Pilkey',
+                    totalChapters: 8,
+                    rewardPerChapter: 0.75,
+                    totalReward: 6.00,
+                    status: 'in_progress',
+                    progress: 37.5,
+                    chaptersCompleted: 3,
+                    currentChapter: 4,
+                    rewardsEarned: 2.25,
+                    rewardsPaid: 0,
+                    assignedAt: new Date(),
+                    createdAt: new Date()
+                },
+                {
+                    childId: childId,
+                    parentId: parentId,
+                    bookId: 'book_harry_potter_1',
+                    bookTitle: 'Harry Potter and the Philosopher\'s Stone',
+                    bookAuthor: 'J.K. Rowling',
+                    totalChapters: 17,
+                    rewardPerChapter: 0.60,
+                    totalReward: 10.20,
+                    status: 'in_progress',
+                    progress: 12,
+                    chaptersCompleted: 2,
+                    currentChapter: 3,
+                    rewardsEarned: 1.20,
+                    rewardsPaid: 0,
+                    assignedAt: new Date(),
+                    createdAt: new Date()
+                }
+            ];
+
+            for (const assignment of assignments) {
+                await addDoc(collection(db, 'assignments'), assignment);
+            }
+        }
+
+        // Quick login function
+        window.quickLogin = async function(type) {
+            if (!demoSetupComplete) {
+                alert('Please click "Setup Demo Data" first!');
+                return;
+            }
+
+            try {
+                const email = type === 'parent' ? 'demo.parent@bookcen.com' : 'demo.child@bookcen.com';
+                const password = 'password123';
+
+                showLoading(`${type}LoginBtn`, true);
+                showMessage(`Signing in as ${type}...`, 'info');
+
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const profile = await getUserProfile(user.uid);
+                
+                if (profile && profile.type === type) {
+                    showMessage(`✅ Welcome, ${profile.name}!`, 'success');
+                    
+                    setTimeout(() => {
+                        if (type === 'parent') {
+                            window.location.href = 'parent-dashboard.html';
+                        } else {
+                            window.location.href = 'child-dashboard.html';
+                        }
+                    }, 1500);
+                } else {
+                    await auth.signOut();
+                    showMessage('❌ Profile mismatch or not found', 'danger');
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('❌ Login failed: ' + error.message, 'danger');
+            } finally {
+                showLoading(`${type}LoginBtn`, false);
+            }
+        };
+
+        // Manual login form
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -93,134 +280,72 @@
             }
 
             try {
-                showLoading(true);
-                clearMessages();
+                showLoading('loginBtn', true);
                 
-                // Try to sign in first
-                let userCredential;
-                let isNewAccount = false;
-                
-                try {
-                    userCredential = await signInWithEmailAndPassword(auth, email, password);
-                } catch (signInError) {
-                    if (signInError.code === 'auth/user-not-found' || signInError.code === 'auth/invalid-credential') {
-                        // Account doesn't exist, create it
-                        showMessage('Account not found. Creating new account...', 'info');
-                        userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                        isNewAccount = true;
-                    } else {
-                        throw signInError; // Re-throw other errors
-                    }
-                }
-                
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
-                // Get or create user profile
-                let profile = await getUserProfile(user.uid);
+                const profile = await getUserProfile(user.uid);
                 
-                if (!profile || isNewAccount) {
-                    // Create new profile
-                    const newProfile = {
-                        type: userType,
-                        email: user.email,
-                        name: userType === 'parent' ? 'Demo Parent' : 'Demo Child'
-                    };
-                    
-                    // If it's a child, we need a parent ID
-                    if (userType === 'child') {
-                        newProfile.parentId = 'demo_parent_123'; // You'll need to create this parent first
-                        newProfile.age = 8;
-                        newProfile.readingLevel = 'Grade 3';
-                        newProfile.favoriteGenre = 'Adventure';
-                        newProfile.gender = 'male';
-                        newProfile.readingStreak = 0;
-                        newProfile.totalRewards = 0;
-                    }
-                    
-                    const success = await createUserProfile(user.uid, newProfile);
-                    if (success) {
-                        profile = newProfile;
-                        showMessage(`Welcome! New ${userType} account created successfully.`, 'success');
-                    } else {
-                        throw new Error('Failed to create user profile');
-                    }
-                } else {
-                    // Existing account - check if user type matches
-                    if (profile.type !== userType) {
-                        await auth.signOut();
-                        showMessage(`This account is registered as a ${profile.type}, not a ${userType}. Please select the correct account type.`, 'danger');
-                        return;
-                    }
+                if (profile && profile.type === userType) {
                     showMessage(`Welcome back, ${profile.name}!`, 'success');
+                    setTimeout(() => {
+                        if (userType === 'parent') {
+                            window.location.href = 'parent-dashboard.html';
+                        } else {
+                            window.location.href = 'child-dashboard.html';
+                        }
+                    }, 1500);
+                } else {
+                    await auth.signOut();
+                    showMessage('User type mismatch or profile not found', 'danger');
                 }
-                
-                // Redirect to appropriate dashboard
-                setTimeout(() => {
-                    if (userType === 'parent') {
-                        window.location.href = 'parent-dashboard.html';
-                    } else {
-                        window.location.href = 'child-dashboard.html';
-                    }
-                }, 1500);
                 
             } catch (error) {
                 console.error('Login error:', error);
-                
-                let errorMessage = 'Login failed: ';
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        errorMessage += 'Please enter a valid email address';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage += 'Incorrect password';
-                        break;
-                    case 'auth/user-disabled':
-                        errorMessage += 'This account has been disabled';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage += 'Too many failed attempts. Please try again later';
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage += 'Password should be at least 6 characters';
-                        break;
-                    case 'auth/email-already-in-use':
-                        errorMessage += 'An account with this email already exists';
-                        break;
-                    default:
-                        errorMessage += error.message;
-                }
-                
-                showMessage(errorMessage, 'danger');
+                showMessage('Login failed: ' + error.message, 'danger');
             } finally {
-                showLoading(false);
+                showLoading('loginBtn', false);
             }
         });
 
-        // Quick login function for demo buttons
-        window.quickLogin = async function(type) {
-            // Set the form values
-            document.getElementById('userType').value = type;
-            document.getElementById('username').value = `${type}@test.com`;
-            document.getElementById('password').value = 'demo123';
-            
-            // Trigger the login
-            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-        };
+        // Helper functions
+        function enableLoginButtons() {
+            document.getElementById('parentLoginBtn').disabled = false;
+            document.getElementById('childLoginBtn').disabled = false;
+            document.getElementById('setupDemo').innerHTML = '✅ Demo Data Ready';
+            document.getElementById('setupDemo').disabled = true;
+            document.getElementById('setupDemo').classList.remove('btn-success');
+            document.getElementById('setupDemo').classList.add('btn-outline-success');
+        }
 
-        // UI Helper Functions
-        function showLoading(isLoading) {
-            const submitBtn = document.getElementById('loginBtn');
+        function showLoading(buttonId, isLoading) {
+            const btn = document.getElementById(buttonId);
             if (isLoading) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+                btn.disabled = true;
+                if (buttonId === 'setupDemo') {
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Setting up...';
+                } else if (buttonId === 'loginBtn') {
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in...';
+                } else {
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+                }
             } else {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Login';
+                btn.disabled = false;
+                if (buttonId === 'setupDemo') {
+                    btn.innerHTML = '🚀 Setup Demo Data (Click First!)';
+                } else if (buttonId === 'loginBtn') {
+                    btn.innerHTML = 'Manual Login';
+                } else if (buttonId === 'parentLoginBtn') {
+                    btn.innerHTML = '👨‍👩‍👧‍👦 Login as Parent';
+                } else if (buttonId === 'childLoginBtn') {
+                    btn.innerHTML = '👧 Login as Child';
+                }
             }
         }
 
         function clearMessages() {
-            const existingMessages = document.querySelectorAll('.alert:not(.alert-info)');
+            const existingMessages = document.querySelectorAll('.alert:not(.alert-info):not(.alert-info)');
             existingMessages.forEach(msg => msg.remove());
         }
 
@@ -232,32 +357,29 @@
             messageDiv.innerHTML = message;
             
             const form = document.getElementById('loginForm');
-            form.appendChild(messageDiv);
+            form.parentNode.insertBefore(messageDiv, form);
             
-            // Auto-remove success messages after 3 seconds
-            if (type === 'success') {
+            if (type === 'success' || type === 'info') {
                 setTimeout(() => {
                     messageDiv.remove();
                 }, 3000);
             }
         }
 
-        // Check if user is already logged in
-        document.addEventListener('DOMContentLoaded', function() {
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    const profile = await getUserProfile(user.uid);
-                    if (profile) {
-                        if (confirm(`You're already logged in as ${profile.name} (${profile.type}). Go to dashboard?`)) {
-                            if (profile.type === 'parent') {
-                                window.location.href = 'parent-dashboard.html';
-                            } else {
-                                window.location.href = 'child-dashboard.html';
-                            }
-                        }
-                    }
-                }
-            });
+        // Check if demo is already setup on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if demo accounts exist
+            try {
+                const testCredential = await signInWithEmailAndPassword(auth, 'demo.parent@bookcen.com', 'password123');
+                await auth.signOut();
+                demoSetupComplete = true;
+                enableLoginButtons();
+                showMessage('Demo data already exists. You can login now.', 'info');
+            } catch (error) {
+                // Demo not setup yet
+                document.getElementById('parentLoginBtn').disabled = true;
+                document.getElementById('childLoginBtn').disabled = true;
+            }
         });
     </script>
 </body>

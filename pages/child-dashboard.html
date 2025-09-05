@@ -3,320 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reading Adventure - BOOKCEN</title>
+    <title>Child Dashboard - BOOKCEN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<body class="child-theme">
-    <!-- Fun Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4);">
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="../index.html">🌟 My Reading Adventure</a>
+            <a class="navbar-brand fw-bold" href="../index.html">📚 BOOKCEN</a>
             <div class="navbar-nav ms-auto">
-                <span class="nav-link text-white">Hi, Alex! 👋</span>
-                <a class="nav-link text-white" href="../index.html">Log Out</a>
+                <a class="nav-link" href="profile.html">Profile</a>
+                <a class="nav-link" href="#" onclick="logoutUser()">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <!-- Welcome Section with Fun Stats -->
+        <!-- Welcome Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div class="card-body text-white text-center py-4">
-                        <h1 class="display-5 mb-3">🎉 Welcome Back, Super Reader! 🎉</h1>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="stat-item">
-                                    <div class="display-4 mb-2">📚</div>
-                                    <h3 id="totalBooks">3</h3>
-                                    <p class="mb-0">Books to Read</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="stat-item">
-                                    <div class="display-4 mb-2">💰</div>
-                                    <h3 id="totalEarned">$15</h3>
-                                    <p class="mb-0">Money Earned</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="stat-item">
-                                    <div class="display-4 mb-2">🔥</div>
-                                    <h3 id="readingStreak">5</h3>
-                                    <p class="mb-0">Day Streak</p>
-                                </div>
-                            </div>
-                        </div>
+                <h2 class="text-primary">Welcome back, <span id="childName">Reader</span>! 📚</h2>
+                <p class="text-muted">Ready to dive into your next adventure?</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-primary mb-2">📖</div>
+                        <h5 class="card-title">Books to Read</h5>
+                        <h3 class="text-primary mb-0" id="booksToRead">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-success mb-2">✅</div>
+                        <h5 class="card-title">Books Finished</h5>
+                        <h3 class="text-success mb-0" id="booksFinished">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-warning mb-2">💰</div>
+                        <h5 class="card-title">Money Earned</h5>
+                        <h3 class="text-warning mb-0" id="moneyEarned">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="display-4 text-info mb-2">🔥</div>
+                        <h5 class="card-title">Reading Streak</h5>
+                        <h3 class="text-info mb-0" id="readingStreak">Loading...</h3>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Achievement Badges -->
+        <!-- Current Reading Assignment -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-warning text-white">
-                        <h5 class="mb-0">🏆 Your Awesome Achievements!</h5>
+                    <div class="card-header">
+                        <h5 class="mb-0">📚 Your Reading List</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-6 col-md-3 mb-3">
-                                <div class="achievement-badge earned">
-                                    <div class="badge-icon">📖</div>
-                                    <small>First Book</small>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <div class="achievement-badge earned">
-                                    <div class="badge-icon">🔥</div>
-                                    <small>5 Day Streak</small>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <div class="achievement-badge locked">
-                                    <div class="badge-icon">⭐</div>
-                                    <small>Perfect Quiz</small>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <div class="achievement-badge locked">
-                                    <div class="badge-icon">🚀</div>
-                                    <small>Speed Reader</small>
-                                </div>
-                            </div>
+                    <div class="card-body" id="readingList">
+                        <!-- Books will be loaded here dynamically -->
+                        <div class="text-center text-muted">
+                            <div class="spinner-border mb-2" role="status"></div>
+                            <p>Loading your books...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- My Reading List -->
+        <!-- Current Chapter Quiz -->
+        <div class="row mb-4" id="currentQuizSection" style="display: none;">
+            <div class="col-12">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning bg-opacity-10">
+                        <h5 class="mb-0 text-warning">📝 Chapter Quiz Ready!</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>You have a quiz ready for <strong id="quizBookTitle">Book Title</strong> - <strong id="quizChapterTitle">Chapter Name</strong></p>
+                        <button class="btn btn-warning" onclick="startQuiz()">Start Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">📚 My Reading List</h5>
-                        <span class="badge bg-light text-primary">3 books assigned</span>
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Activity</h5>
                     </div>
                     <div class="card-body">
-                        <!-- Book 1 - Chapter Quiz Available -->
-                        <div class="book-card quiz-ready mb-4 p-4 rounded shadow-sm">
-                            <div class="row align-items-center">
-                                <div class="col-md-2 text-center">
-                                    <div class="book-cover">📗</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4 class="book-title">Dog Man: Mothering Heights</h4>
-                                    <p class="book-author">by Dav Pilkey</p>
-                                    
-                                    <!-- Chapter Progress -->
-                                    <div class="chapter-progress mb-2">
-                                        <div class="d-flex justify-content-between small text-muted mb-1">
-                                            <span>Chapter Progress</span>
-                                            <span>3/8 chapters completed</span>
-                                        </div>
-                                        <div class="progress mb-2">
-                                            <div class="progress-bar bg-info" style="width: 37.5%"></div>
-                                        </div>
-                                        
-                                        <!-- Chapter Status -->
-                                        <div class="chapter-badges">
-                                            <span class="badge bg-success me-1" title="Chapter 1 - Quiz Passed">✓ Ch.1</span>
-                                            <span class="badge bg-success me-1" title="Chapter 2 - Quiz Passed">✓ Ch.2</span>
-                                            <span class="badge bg-success me-1" title="Chapter 3 - Quiz Passed">✓ Ch.3</span>
-                                            <span class="badge bg-warning me-1 pulse-badge" title="Chapter 4 - Quiz Available!">🎯 Ch.4</span>
-                                            <span class="badge bg-secondary me-1" title="Chapter 5 - Not Read Yet">📖 Ch.5</span>
-                                            <span class="badge bg-secondary me-1" title="Chapter 6 - Not Read Yet">📖 Ch.6</span>
-                                            <span class="badge bg-secondary me-1" title="Chapter 7 - Not Read Yet">📖 Ch.7</span>
-                                            <span class="badge bg-secondary me-1" title="Chapter 8 - Not Read Yet">📖 Ch.8</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="chapter-reward-display">
-                                        <div class="reward-amount">$0.75</div>
-                                        <small>Per Chapter</small>
-                                        <hr class="my-1">
-                                        <div class="total-possible">$6.00 Total</div>
-                                        <small>Earned: $2.25</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <button class="btn btn-warning btn-lg pulse" onclick="startChapterQuiz('dogman', 4)">
-                                        🎯 Chapter 4 Quiz
-                                    </button>
-                                    <div class="mt-2">
-                                        <small class="text-muted">Quiz available!</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Book 2 - Currently Reading, Next Chapter Ready -->
-                        <div class="book-card in-progress mb-4 p-4 rounded shadow-sm">
-                            <div class="row align-items-center">
-                                <div class="col-md-2 text-center">
-                                    <div class="book-cover">🧙‍♂️</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4 class="book-title">Harry Potter and the Philosopher's Stone</h4>
-                                    <p class="book-author">by J.K. Rowling</p>
-                                    
-                                    <!-- Chapter Progress -->
-                                    <div class="chapter-progress mb-2">
-                                        <div class="d-flex justify-content-between small text-muted mb-1">
-                                            <span>Chapter Progress</span>
-                                            <span>2/17 chapters completed</span>
-                                        </div>
-                                        <div class="progress mb-2">
-                                            <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" style="width: 12%"></div>
-                                        </div>
-                                        
-                                        <!-- Chapter Status (showing fewer for longer book) -->
-                                        <div class="chapter-badges">
-                                            <span class="badge bg-success me-1" title="Chapter 1 - Quiz Passed">✓ Ch.1</span>
-                                            <span class="badge bg-success me-1" title="Chapter 2 - Quiz Passed">✓ Ch.2</span>
-                                            <span class="badge bg-secondary me-1" title="Chapter 3 - Keep Reading">📖 Ch.3</span>
-                                            <span class="badge bg-secondary me-1" title="More chapters...">+ 14 more</span>
-                                        </div>
-                                        <small class="text-primary">📖 Keep reading Chapter 3!</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="chapter-reward-display">
-                                        <div class="reward-amount">$0.60</div>
-                                        <small>Per Chapter</small>
-                                        <hr class="my-1">
-                                        <div class="total-possible">$10.20 Total</div>
-                                        <small>Earned: $1.20</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <button class="btn btn-outline-primary" disabled>
-                                        📖 Keep Reading
-                                    </button>
-                                    <div class="mt-2">
-                                        <small class="text-muted">Finish Chapter 3 first</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Book 3 - Not Started -->
-                        <div class="book-card not-started mb-4 p-4 rounded shadow-sm">
-                            <div class="row align-items-center">
-                                <div class="col-md-2 text-center">
-                                    <div class="book-cover">🌟</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h4 class="book-title">Wonder</h4>
-                                    <p class="book-author">by R.J. Palacio</p>
-                                    
-                                    <!-- Chapter Preview -->
-                                    <div class="chapter-progress mb-2">
-                                        <div class="d-flex justify-content-between small text-muted mb-1">
-                                            <span>Chapters Available</span>
-                                            <span>12 chapters total</span>
-                                        </div>
-                                        <div class="chapter-badges">
-                                            <span class="badge bg-light text-dark me-1" title="12 chapters to unlock">📚 12 Chapters</span>
-                                        </div>
-                                        <small class="text-muted">Start reading to unlock Chapter 1 quiz!</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="chapter-reward-display">
-                                        <div class="reward-amount">$0.65</div>
-                                        <small>Per Chapter</small>
-                                        <hr class="my-1">
-                                        <div class="total-possible">$7.80 Total</div>
-                                        <small>Earned: $0.00</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <button class="btn btn-primary" onclick="startReading('wonder')">
-                                        🚀 Start Reading
-                                    </button>
-                                    <div class="mt-2">
-                                        <small class="text-muted">Begin Chapter 1</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Reading Goals Progress -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">🎯 This Week's Goal</h5>
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="circular-progress mb-3">
-                            <div class="progress-circle">
-                                <span class="progress-value">3/4</span>
-                            </div>
-                        </div>
-                        <p class="mb-2">Read 4 chapters this week</p>
-                        <p class="text-success"><strong>You're almost there! 🌟</strong></p>
-                        <small class="text-muted">1 more chapter to reach your goal!</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">💰 Money Jar</h5>
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="money-jar">
-                            <div class="jar-icon">🏺</div>
-                            <div class="money-amount">$15.00</div>
-                        </div>
-                        <p class="mb-2">Total Earned</p>
-                        <div class="recent-earnings">
-                            <small class="text-muted">Recent: +$5.00 (Dog Man quiz)</small>
-                        </div>
-                        <button class="btn btn-outline-success btn-sm mt-2" onclick="requestPayout()">
-                            💰 Ask for My Money
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Fun Motivational Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0" style="background: linear-gradient(45deg, #FFD93D, #FF6B6B);">
-                    <div class="card-body text-center text-white py-4">
-                        <h3 class="mb-3">🌟 You're Amazing! 🌟</h3>
-                        <p class="fs-5 mb-3">Every book you read makes you smarter and stronger!</p>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="fun-fact">
-                                    <div class="fact-icon">🧠</div>
-                                    <p class="mb-0">Reading makes your brain grow!</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="fun-fact">
-                                    <div class="fact-icon">🗺️</div>
-                                    <p class="mb-0">Books take you on adventures!</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="fun-fact">
-                                    <div class="fact-icon">🎨</div>
-                                    <p class="mb-0">Stories spark your imagination!</p>
-                                </div>
+                        <div class="list-group list-group-flush" id="activityList">
+                            <!-- Activity will be loaded here dynamically -->
+                            <div class="text-center text-muted">
+                                <div class="spinner-border mb-2" role="status"></div>
+                                <p>Loading activity...</p>
                             </div>
                         </div>
                     </div>
@@ -325,17 +122,20 @@
         </div>
     </div>
 
-    <!-- Fun Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0">
-                <div class="modal-body text-center p-4">
-                    <div class="success-animation mb-3">🎉</div>
-                    <h3 class="text-success mb-3">Awesome Job!</h3>
-                    <p id="successMessage">You're doing great!</p>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">
-                        Keep Reading! 📚
-                    </button>
+    <!-- Quiz Modal -->
+    <div class="modal fade" id="quizModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quizModalTitle">Chapter Quiz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="quizModalBody">
+                    <!-- Quiz questions will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitQuizBtn" onclick="submitQuiz()">Submit Quiz</button>
                 </div>
             </div>
         </div>
@@ -344,470 +144,454 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
-    <script>
-        // Child Dashboard JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Child Dashboard loaded!');
-            loadChildData();
-            startAnimations();
+    <!-- Firebase Integration -->
+    <script type="module">
+        // Import Firebase functions
+        import { auth, db, getUserProfile } from '../js/firebase-config.js';
+        import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        // Global variables
+        let currentUser = null;
+        let currentUserProfile = null;
+        let currentChildId = null;
+        let userAssignments = [];
+        let currentQuiz = null;
+
+        // Authentication state observer
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const profile = await getUserProfile(user.uid);
+                
+                if (profile) {
+                    if (profile.type === 'child') {
+                        // Direct child login
+                        currentChildId = user.uid;
+                        currentUserProfile = profile;
+                    } else if (profile.type === 'parent') {
+                        // Parent switching to child view
+                        const childId = sessionStorage.getItem('currentChildId');
+                        if (childId) {
+                            const childProfile = await getUserProfile(childId);
+                            if (childProfile && childProfile.parentId === user.uid) {
+                                currentChildId = childId;
+                                currentUserProfile = childProfile;
+                            } else {
+                                alert('Invalid child access');
+                                window.location.href = 'parent-dashboard.html';
+                                return;
+                            }
+                        } else {
+                            alert('No child selected');
+                            window.location.href = 'parent-dashboard.html';
+                            return;
+                        }
+                    }
+                    
+                    document.getElementById('childName').textContent = currentUserProfile.name || 'Reader';
+                    await loadChildDashboard(currentChildId);
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
-        // Load child's data (in real app, this would come from database)
-        function loadChildData() {
-            const childData = {
-                name: 'Alex',
-                totalBooks: 3,
-                totalEarned: 15,
-                readingStreak: 5,
-                weeklyGoalProgress: 3,
-                weeklyGoalTarget: 4
-            };
-
-            // Update displays
-            document.getElementById('totalBooks').textContent = childData.totalBooks;
-            document.getElementById('totalEarned').textContent = `$${childData.totalEarned}`;
-            document.getElementById('readingStreak').textContent = childData.readingStreak;
+        // Load child dashboard data
+        async function loadChildDashboard(childId) {
+            try {
+                console.log('Loading dashboard for child:', childId);
+                
+                await Promise.all([
+                    loadAssignments(childId),
+                    loadStats(childId),
+                    loadActivity(childId)
+                ]);
+                
+            } catch (error) {
+                console.error('Error loading child dashboard:', error);
+                showError('Error loading dashboard data. Please refresh the page.');
+            }
         }
 
-// Handle quiz completion when returning from quiz
-function handleQuizCompletion() {
-    const quizResult = localStorage.getItem('quizCompleted');
-    if (quizResult) {
-        const result = JSON.parse(quizResult);
-        
-        // Show success message
-        showSuccessMessage(`🎉 Amazing work! You earned $${result.earned.toFixed(2)} for Chapter ${result.chapter}!`);
-        
-        // Update the book's chapter status
-        updateBookProgress(result.book, result.chapter, result.score >= Math.ceil(5 * 0.8)); // Need 80% to pass
-        
-        // Update total earnings
-        updateEarnings(result.earned);
-        
-        // Clear the stored result
-        localStorage.removeItem('quizCompleted');
-    }
-}
-
-function updateBookProgress(bookId, chapterNum, passed) {
-    if (passed) {
-        // Update the UI to show chapter as completed and next chapter available
-        const bookCard = document.querySelector(`[data-book="${bookId}"]`);
-        if (bookCard) {
-            // Update chapter status badges
-            const currentChapterBadge = bookCard.querySelector(`[data-chapter="${chapterNum}"]`);
-            if (currentChapterBadge) {
-                currentChapterBadge.className = 'badge bg-success me-1';
-                currentChapterBadge.innerHTML = `✓ Ch.${chapterNum}`;
-                currentChapterBadge.title = `Chapter ${chapterNum} - Quiz Passed`;
-            }
-            
-            // Enable next chapter if it exists
-            const nextChapterNum = parseInt(chapterNum) + 1;
-            const nextChapterBadge = bookCard.querySelector(`[data-chapter="${nextChapterNum}"]`);
-            if (nextChapterBadge) {
-                nextChapterBadge.className = 'badge bg-warning me-1 pulse-badge';
-                nextChapterBadge.innerHTML = `🎯 Ch.${nextChapterNum}`;
-                nextChapterBadge.title = `Chapter ${nextChapterNum} - Quiz Available!`;
+        // Load assignments for the child
+        async function loadAssignments(childId) {
+            try {
+                console.log('Querying assignments for childId:', childId);
                 
-                // Update the quiz button
-                const quizButton = bookCard.querySelector('.quiz-btn');
-                if (quizButton) {
-                    quizButton.innerHTML = `🎯 Chapter ${nextChapterNum} Quiz`;
-                    quizButton.onclick = () => startChapterQuiz(bookId, nextChapterNum);
-                    quizButton.disabled = false;
-                    quizButton.className = 'btn btn-warning btn-lg pulse';
+                const assignmentsQuery = query(
+                    collection(db, 'assignments'),
+                    where('childId', '==', childId)
+                );
+                
+                const assignmentsSnapshot = await getDocs(assignmentsQuery);
+                
+                console.log('Found assignments:', assignmentsSnapshot.size);
+                
+                userAssignments = [];
+                assignmentsSnapshot.forEach((doc) => {
+                    const assignment = { id: doc.id, ...doc.data() };
+                    userAssignments.push(assignment);
+                    console.log('Assignment loaded:', assignment);
+                });
+
+                displayAssignments();
+                
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                document.getElementById('readingList').innerHTML = `
+                    <div class="alert alert-danger">
+                        Error loading your books. Please refresh the page.
+                    </div>
+                `;
+            }
+        }
+
+        // Display assignments in the UI
+        function displayAssignments() {
+            const readingListContainer = document.getElementById('readingList');
+            
+            if (userAssignments.length === 0) {
+                readingListContainer.innerHTML = `
+                    <div class="text-center text-muted">
+                        <h5>📖 No Books Assigned Yet</h5>
+                        <p>Your parent hasn't assigned any books yet. Ask them to add some books for you!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let assignmentsHtml = '';
+            
+            userAssignments.forEach((assignment) => {
+                const progressWidth = assignment.progress || 0;
+                const isCompleted = assignment.status === 'completed';
+                const statusClass = isCompleted ? 'border-success bg-success bg-opacity-10' : 'border-primary';
+                const statusBadge = isCompleted ? 
+                    '<span class="badge bg-success fs-6">✅ Completed!</span>' : 
+                    '<span class="badge bg-primary fs-6">📖 Reading</span>';
+                
+                assignmentsHtml += `
+                    <div class="card mb-3 ${statusClass}">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="card-title mb-1">${assignment.bookTitle || 'Unknown Book'}</h5>
+                                    <p class="text-muted mb-2">by ${assignment.bookAuthor || 'Unknown Author'}</p>
+                                    <div class="progress mb-2" style="height: 8px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                             style="width: ${progressWidth}%" 
+                                             aria-valuenow="${progressWidth}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">${progressWidth}% Complete</small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    ${statusBadge}
+                                    <div class="mt-2">
+                                        <span class="badge bg-warning">💰 $${assignment.totalReward || 0} Reward</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        ${isCompleted ? 
+                                            '<button class="btn btn-success btn-sm" disabled>Finished! 🎉</button>' :
+                                            `<button class="btn btn-primary btn-sm" onclick="openBook('${assignment.id}')">Continue Reading</button>`
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${assignment.chapters ? `
+                                <div class="mt-3">
+                                    <h6>📑 Chapters:</h6>
+                                    <div class="row">
+                                        ${assignment.chapters.map((chapter, index) => `
+                                            <div class="col-md-3 mb-2">
+                                                <div class="small p-2 border rounded ${chapter.completed ? 'bg-success bg-opacity-25' : 'bg-light'}">
+                                                    <strong>Ch. ${chapter.number}:</strong> ${chapter.title}<br>
+                                                    <small class="text-success">$${chapter.reward} ${chapter.completed ? '✅' : ''}</small>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            readingListContainer.innerHTML = assignmentsHtml;
+        }
+
+        // Load statistics
+        async function loadStats(childId) {
+            try {
+                let booksToRead = 0;
+                let booksFinished = 0;
+                let totalEarned = 0;
+                
+                userAssignments.forEach(assignment => {
+                    if (assignment.status === 'completed') {
+                        booksFinished++;
+                        totalEarned += assignment.totalReward || 0;
+                    } else {
+                        booksToRead++;
+                    }
+                });
+                
+                // Get reading streak from user profile
+                const childProfile = await getUserProfile(childId);
+                const readingStreak = childProfile?.readingStreak || 0;
+                
+                // Update display
+                document.getElementById('booksToRead').textContent = booksToRead;
+                document.getElementById('booksFinished').textContent = booksFinished;
+                document.getElementById('moneyEarned').textContent = `$${totalEarned}`;
+                document.getElementById('readingStreak').textContent = `${readingStreak} days`;
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('booksToRead').textContent = '0';
+                document.getElementById('booksFinished').textContent = '0';
+                document.getElementById('moneyEarned').textContent = '$0';
+                document.getElementById('readingStreak').textContent = '0 days';
+            }
+        }
+
+        // Load recent activity
+        async function loadActivity(childId) {
+            try {
+                const activityContainer = document.getElementById('activityList');
+                
+                // Generate activity based on assignments
+                let activityHtml = '';
+                
+                if (userAssignments.length > 0) {
+                    const recentAssignment = userAssignments[0];
+                    activityHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">📚 Book Assigned</div>
+                                "${recentAssignment.bookTitle}" was assigned by your parent
+                            </div>
+                            <small class="text-muted">${formatDate(recentAssignment.assignedAt)}</small>
+                        </div>
+                    `;
+                } else {
+                    activityHtml = `
+                        <div class="list-group-item text-center text-muted">
+                            <p>No recent activity. Start reading to see your progress here!</p>
+                        </div>
+                    `;
+                }
+                
+                activityContainer.innerHTML = activityHtml;
+                
+            } catch (error) {
+                console.error('Error loading activity:', error);
+                document.getElementById('activityList').innerHTML = `
+                    <div class="alert alert-danger">Error loading activity</div>
+                `;
+            }
+        }
+
+        // Utility functions
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Recently';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString();
+        }
+
+        function showError(message) {
+            console.error(message);
+            alert(message);
+        }
+
+        // Global functions for UI interactions
+        window.openBook = function(assignmentId) {
+            const assignment = userAssignments.find(a => a.id === assignmentId);
+            if (assignment) {
+                alert(`Opening "${assignment.bookTitle}"!\n\nThis would typically open a reading interface or chapter selection. Reading progress tracking coming soon!`);
+                
+                // TODO: Implement reading interface
+                // For now, just simulate progress
+                // window.location.href = `reading.html?assignment=${assignmentId}`;
+            }
+        };
+
+        window.startQuiz = function() {
+            if (currentQuiz) {
+                startChapterQuiz(currentQuiz.assignmentId, currentQuiz.chapterId);
+            } else {
+                alert('No quiz available at the moment.');
+            }
+        };
+
+        window.startChapterQuiz = function(assignmentId, chapterId) {
+            const assignment = userAssignments.find(a => a.id === assignmentId);
+            if (!assignment || !assignment.quizzes || !assignment.quizzes[chapterId]) {
+                alert('Quiz not found for this chapter.');
+                return;
+            }
+
+            const chapter = assignment.chapters.find(c => c.id === chapterId);
+            const questions = assignment.quizzes[chapterId];
+            
+            if (!questions || questions.length === 0) {
+                alert('No questions available for this quiz.');
+                return;
+            }
+
+            // Set up the quiz modal
+            const modal = new bootstrap.Modal(document.getElementById('quizModal'));
+            document.getElementById('quizModalTitle').textContent = 
+                `${assignment.bookTitle} - Chapter ${chapter.number}: ${chapter.title}`;
+            
+            // Generate quiz HTML
+            let quizHtml = '<form id="quizForm">';
+            questions.forEach((question, qIndex) => {
+                quizHtml += `
+                    <div class="mb-4">
+                        <h6>Question ${qIndex + 1}: ${question.question}</h6>
+                        <div class="ms-3">
+                `;
+                
+                question.options.forEach((option, oIndex) => {
+                    if (option && option.trim()) {
+                        quizHtml += `
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" 
+                                       name="question${qIndex}" value="${oIndex}" 
+                                       id="q${qIndex}o${oIndex}">
+                                <label class="form-check-label" for="q${qIndex}o${oIndex}">
+                                    ${option}
+                                </label>
+                            </div>
+                        `;
+                    }
+                });
+                
+                quizHtml += `
+                        </div>
+                    </div>
+                `;
+            });
+            quizHtml += '</form>';
+            
+            document.getElementById('quizModalBody').innerHTML = quizHtml;
+            
+            // Store current quiz info for submission
+            window.currentQuizData = {
+                assignmentId: assignmentId,
+                chapterId: chapterId,
+                questions: questions,
+                passingScore: assignment.settings?.passingScore || 80
+            };
+            
+            modal.show();
+        };
+
+        window.submitQuiz = async function() {
+            if (!window.currentQuizData) {
+                alert('Quiz data not found.');
+                return;
+            }
+
+            const form = document.getElementById('quizForm');
+            const formData = new FormData(form);
+            const answers = [];
+            let correctAnswers = 0;
+            
+            // Collect answers
+            window.currentQuizData.questions.forEach((question, qIndex) => {
+                const selectedAnswer = formData.get(`question${qIndex}`);
+                if (selectedAnswer !== null) {
+                    answers.push(parseInt(selectedAnswer));
+                    // Check if correct (first option is always correct in your system)
+                    if (parseInt(selectedAnswer) === question.correctAnswer || parseInt(selectedAnswer) === 0) {
+                        correctAnswers++;
+                    }
+                } else {
+                    answers.push(-1); // No answer selected
+                }
+            });
+            
+            // Calculate score
+            const totalQuestions = window.currentQuizData.questions.length;
+            const scorePercentage = (correctAnswers / totalQuestions) * 100;
+            const passed = scorePercentage >= window.currentQuizData.passingScore;
+            
+            try {
+                // Update assignment in Firestore
+                const assignmentRef = doc(db, 'assignments', window.currentQuizData.assignmentId);
+                const assignment = userAssignments.find(a => a.id === window.currentQuizData.assignmentId);
+                
+                // Update chapter quiz status
+                const updatedChapters = assignment.chapters.map(chapter => {
+                    if (chapter.id === window.currentQuizData.chapterId) {
+                        return {
+                            ...chapter,
+                            quizCompleted: true,
+                            quizPassed: passed,
+                            quizScore: scorePercentage,
+                            lastQuizDate: new Date()
+                        };
+                    }
+                    return chapter;
+                });
+                
+                // Calculate new progress
+                const completedChapters = updatedChapters.filter(c => c.quizPassed).length;
+                const newProgress = (completedChapters / updatedChapters.length) * 100;
+                const isBookCompleted = completedChapters === updatedChapters.length;
+                
+                await updateDoc(assignmentRef, {
+                    chapters: updatedChapters,
+                    progress: newProgress,
+                    status: isBookCompleted ? 'completed' : 'in_progress',
+                    lastActivity: new Date()
+                });
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('quizModal')).hide();
+                
+                // Show results
+                const resultMessage = passed ? 
+                    `🎉 Congratulations! You passed!\n\nScore: ${scorePercentage.toFixed(1)}%\nCorrect: ${correctAnswers}/${totalQuestions}\n\nYou earned ${assignment.chapters.find(c => c.id === window.currentQuizData.chapterId)?.reward || 0}!` :
+                    `😔 Not quite there yet!\n\nScore: ${scorePercentage.toFixed(1)}%\nCorrect: ${correctAnswers}/${totalQuestions}\nNeeded: ${window.currentQuizData.passingScore}%\n\nKeep reading and try again!`;
+                
+                alert(resultMessage);
+                
+                // Reload dashboard to show updated progress
+                await loadChildDashboard(currentChildId);
+                
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                alert('Error submitting quiz. Please try again.');
+            }
+        };
+
+        window.logoutUser = async function() {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    // Clear session storage
+                    sessionStorage.removeItem('currentChildId');
+                    await signOut(auth);
+                    window.location.href = '../index.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('Error logging out');
                 }
             }
-            
-            // Update progress bar
-            updateProgressBar(bookCard, bookId);
-            
-            console.log(`Chapter ${chapterNum} completed for ${bookId}`);
-        }
-    }
-}
+        };
 
-function updateEarnings(newEarning) {
-    const currentEarnings = parseFloat(document.getElementById('totalEarned').textContent.replace('$', ''));
-    const newTotal = currentEarnings + newEarning;
-    document.getElementById('totalEarned').textContent = `$${newTotal.toFixed(2)}`;
-    
-    // Update money jar
-    const moneyAmount = document.querySelector('.money-amount');
-    if (moneyAmount) {
-        moneyAmount.textContent = `$${newTotal.toFixed(2)}`;
-    }
-}
-
-function updateProgressBar(bookCard, bookId) {
-    // Count completed chapters
-    const completedChapters = bookCard.querySelectorAll('.badge.bg-success').length;
-    const totalChapters = bookCard.querySelectorAll('[data-chapter]').length;
-    
-    const progressPercent = (completedChapters / totalChapters) * 100;
-    const progressBar = bookCard.querySelector('.progress-bar');
-    if (progressBar) {
-        progressBar.style.width = `${progressPercent}%`;
-    }
-    
-    // Update progress text
-    const progressText = bookCard.querySelector('.chapter-progress .small span:last-child');
-    if (progressText) {
-        progressText.textContent = `${completedChapters}/${totalChapters} chapters completed`;
-    }
-    
-    // Update earned amount
-    const earnedSmall = bookCard.querySelector('.total-possible + small');
-    if (earnedSmall && bookId === 'dogman') {
-        earnedSmall.textContent = `Earned: $${(completedChapters * 0.75).toFixed(2)}`;
-    }
-}
-
-// Update your existing DOMContentLoaded event listener:
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Child Dashboard loaded!');
-    loadChildData();
-    handleQuizCompletion(); // Add this line
-    startAnimations();
-});
-
-        // Start reading a book
-        function startReading(bookId) {
-            showSuccessMessage(`🚀 Great choice! Happy reading!`);
-            
-            // In a real app, this would update the book status in the database
-            setTimeout(() => {
-                // Simulate book status change
-                const bookCard = event.target.closest('.book-card');
-                bookCard.className = 'book-card in-progress mb-4 p-4 rounded shadow-sm';
-                
-                // Update button
-                event.target.outerHTML = `
-                    <button class="btn btn-outline-primary" disabled>
-                        📖 Keep Reading
-                    </button>
-                `;
-                
-                // Add progress bar
-                const statusArea = bookCard.querySelector('.book-status');
-                statusArea.innerHTML = `
-                    <div class="progress mb-2">
-                        <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" 
-                             style="width: 10%">10% Complete</div>
-                    </div>
-                    <small class="text-muted">📖 Just started! Keep going!</small>
-                `;
-            }, 1500);
-        }
-
-        // Start a chapter quiz
-        function startChapterQuiz(bookId, chapterNum) {
-            if (confirm(`🎯 Ready for the Chapter ${chapterNum} quiz? Make sure you finished reading it!`)) {
-                showSuccessMessage(`🎯 Starting Chapter ${chapterNum} quiz! You've got this!`);
-                
-                setTimeout(() => {
-                    // For demo, redirect to quiz page with chapter info
-                    window.location.href = `take-quiz.html?book=${bookId}&chapter=${chapterNum}`;
-                }, 1500);
-            }
-        }
-
-        // Mark chapter as read and unlock quiz
-        function markChapterRead(bookId, chapterNum) {
-            // This would be called when child marks a chapter as "finished reading"
-            // In the real app, this could be a button or automatic after time spent reading
-            
-            showSuccessMessage(`📖 Great job finishing Chapter ${chapterNum}! Quiz is now available!`);
-            
-            // Update the UI to show quiz is available
-            setTimeout(() => {
-                // Update chapter badge and enable quiz button
-                updateChapterStatus(bookId, chapterNum, 'quiz-available');
-            }, 1000);
-        }
-
-        // Update chapter status in UI
-        function updateChapterStatus(bookId, chapterNum, status) {
-            // In a real app, this would update the database and refresh the UI
-            // For demo purposes, we'll simulate the UI changes
-            console.log(`Chapter ${chapterNum} of ${bookId} status updated to: ${status}`);
-        }
-
-        // Request payout
-        function requestPayout() {
-            if (confirm('💰 Ask your parent for your earned money?')) {
-                showSuccessMessage(`💰 Request sent to your parent! They'll give you your money soon.`);
-                
-                // In a real app, this would send a notification to the parent
-                setTimeout(() => {
-                    alert('📱 Your parent has been notified about your payout request!');
-                }, 2000);
-            }
-        }
-
-        // Show success modal with message
-        function showSuccessMessage(message) {
-            document.getElementById('successMessage').textContent = message;
-            const modal = new bootstrap.Modal(document.getElementById('successModal'));
-            modal.show();
-        }
-
-        // Start fun animations
-        function startAnimations() {
-            // Animate progress bars
-            setTimeout(() => {
-                const progressBars = document.querySelectorAll('.progress-bar');
-                progressBars.forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0%';
-                    setTimeout(() => {
-                        bar.style.transition = 'width 2s ease-in-out';
-                        bar.style.width = width;
-                    }, 500);
-                });
-            }, 500);
-
-            // Add floating animation to achievement badges
-            const badges = document.querySelectorAll('.achievement-badge.earned');
-            badges.forEach((badge, index) => {
-                setTimeout(() => {
-                    badge.style.animation = 'bounce 1s ease-in-out';
-                }, index * 200);
-            });
-        }
-
-        // Fun interactive features
-        document.querySelectorAll('.book-cover').forEach(cover => {
-            cover.addEventListener('click', function() {
-                this.style.transform = 'scale(1.2) rotate(5deg)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1) rotate(0deg)';
-                }, 300);
-            });
+        // DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Child Dashboard loaded with Firebase!');
         });
-
-        // Update reading streak daily (demo)
-        setInterval(() => {
-            const streakElement = document.getElementById('readingStreak');
-            let currentStreak = parseInt(streakElement.textContent);
-            
-            // Random chance to increase streak (for demo purposes)
-            if (Math.random() > 0.95) {
-                streakElement.textContent = currentStreak + 1;
-                showSuccessMessage(`🔥 Your reading streak increased to ${currentStreak + 1} days!`);
-            }
-        }, 30000); // Check every 30 seconds for demo
+        
     </script>
-
-    <style>
-        /* Custom styles for child dashboard */
-        .child-theme {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-
-        .stat-item {
-            padding: 20px;
-        }
-
-        .achievement-badge {
-            padding: 15px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .achievement-badge.earned {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .achievement-badge.locked {
-            background: #e9ecef;
-            color: #6c757d;
-        }
-
-        .achievement-badge:hover {
-            transform: translateY(-5px);
-        }
-
-        .badge-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .book-card {
-            transition: all 0.3s ease;
-            border-left: 5px solid #dee2e6;
-        }
-
-        .quiz-ready {
-            border-left-color: #ffc107;
-            background: linear-gradient(135deg, #fff3cd, #f8f9fa);
-        }
-
-        .chapter-reward-display {
-            background: linear-gradient(45deg, #17a2b8, #138496);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(23, 162, 184, 0.3);
-        }
-
-        .chapter-reward-display .reward-amount {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .chapter-reward-display .total-possible {
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .chapter-badges {
-            margin-bottom: 8px;
-        }
-
-        .chapter-badges .badge {
-            font-size: 0.75rem;
-            margin-bottom: 2px;
-        }
-
-        .pulse-badge {
-            animation: pulse-badge 2s infinite;
-        }
-
-        @keyframes pulse-badge {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 5px rgba(255, 193, 7, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
-            }
-        }
-
-        .chapter-progress .progress {
-            height: 8px;
-        }
-
-        .book-card.in-progress {
-            border-left-color: #ffc107;
-            background: linear-gradient(135deg, #fff3cd, #f8f9fa);
-        }
-
-        .book-card.not-started {
-            border-left-color: #6c757d;
-        }
-
-        .book-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
-        }
-
-        .book-cover {
-            font-size: 4rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .book-title {
-            color: #495057;
-            margin-bottom: 5px;
-        }
-
-        .book-author {
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-
-        .reward-display {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
-        }
-
-        .reward-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
-            }
-        }
-
-        .circular-progress {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-        }
-
-        .progress-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: conic-gradient(#28a745 75%, #e9ecef 75%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .money-jar {
-            padding: 20px;
-        }
-
-        .jar-icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-        }
-
-        .money-amount {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .fun-fact {
-            padding: 20px;
-        }
-
-        .fact-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .success-animation {
-            font-size: 4rem;
-            animation: bounce 1s ease-in-out infinite alternate;
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0px); }
-            to { transform: translateY(-15px); }
-        }
-    </style>
 </body>
 </html>
